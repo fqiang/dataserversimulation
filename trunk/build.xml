@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="PoissonArrival">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../eclipse_J2ee/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="log4j.userclasspath">
+        <pathelement location="C:/Program Files (x86)/Java/apache-log4j-1.2.15/log4j-1.2.15.jar"/>
+    </path>
+    <path id="PoissonArrival.classpath">
+        <pathelement location="bin"/>
+        <path refid="log4j.userclasspath"/>
+    </path>
+    <path id="run.LoadBalancer.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
+    <path id="run.TestLoadBalancer.classpath">
+        <pathelement location="log4j"/>
+        <path refid="PoissonArrival.classpath"/>
+    </path>
+    <path id="run.ServerNode_China.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
+    <path id="run.ServerNode_Japan.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
+    <path id="run.ServerNode_Asian.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
+    <path id="run.ServerNode_Europe.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
+    <path id="run.ServerNode_American.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="PoissonArrival.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="LoadBalancer">
+        <java classname="acs.project.simulation.optimization.LoadBalancer" failonerror="true" fork="yes">
+            <arg line="5 4000"/>
+            <classpath refid="run.LoadBalancer.classpath"/>
+        </java>
+    </target>
+    <target name="RequestEventGenerator">
+        <java classname="acs.project.simulation.dataset.RequestEventGenerator" failonerror="true" fork="yes">
+            <classpath refid="PoissonArrival.classpath"/>
+        </java>
+    </target>
+    <target name="TestLoadBalancer">
+        <java classname="acs.project.simulation.server.TestLoadBalancer" failonerror="true" fork="yes">
+            <classpath refid="run.TestLoadBalancer.classpath"/>
+        </java>
+    </target>
+    <target name="ServerNode_China">
+        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
+            <arg line="CHINA1 CHINA 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_China.classpath"/>
+        </java>
+    </target>
+    <target name="ServerNode_Japan">
+        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
+            <arg line="JAPAN1 JAPAN 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_Japan.classpath"/>
+        </java>
+    </target>
+    <target name="ServerNode_Asian">
+        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
+            <arg line="ASIAN1 ASIAN 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_Asian.classpath"/>
+        </java>
+    </target>
+    <target name="ServerNode_Europe">
+        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
+            <arg line="EUROPE1 EUROPE 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_Europe.classpath"/>
+        </java>
+    </target>
+    <target name="ServerNode_American">
+        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
+            <arg line="AMERICAN1 AMERICAN 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_American.classpath"/>
+        </java>
+    </target>
+</project>
