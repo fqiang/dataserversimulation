@@ -214,13 +214,13 @@ public class LoadBalancer {
 			int numServers = Integer.parseInt(args[0]);
 			int port = args.length==1?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[1]);
 			
-			String filename = "LoadBalancer" +".report";
-			int startIndex = filename.length();
+			String filename = ".//report//LoadBalancer" +".report";
+			int endIndex = filename.length();
 			File file = new File(filename);
 			int i = 1;
 			while(file.exists())
 			{
-				filename = filename.substring(0,filename.indexOf(".", startIndex)) + "." + i;
+				filename = filename.substring(0,endIndex) + "." + i;
 				file = new File(filename);
 				i++;
 			}

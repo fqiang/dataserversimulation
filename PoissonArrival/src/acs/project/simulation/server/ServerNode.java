@@ -515,7 +515,7 @@ public class ServerNode {
 			String lbAddr = args.length==6?LoadBalancer.DEFAULT_LB_ADDR:args[6].split(":")[0];
 			int lbPort = args.length==6?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[6].split(":")[1]);
 			
-			String filename = name + "." + loc.name()+".report";
+			String filename = ".//report//"+name + "." + loc.name()+".report";
 			PrintStream report = new PrintStream(new FileOutputStream(new File(filename)), true);
 			
 			ServerNode server = new ServerNode(name,loc,maxConcRequests,maxBW,maxPower,idlePowerRate, lbPort,lbAddr,report);
