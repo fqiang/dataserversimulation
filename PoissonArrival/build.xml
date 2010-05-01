@@ -11,7 +11,7 @@
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="log4j.userclasspath">
-        <pathelement location="../../../PoissonArrival/lib/log4j-1.2.15.jar"/>
+        <pathelement location="./lib/log4j-1.2.15.jar"/>
     </path>
     <path id="PoissonArrival.classpath">
         <pathelement location="bin"/>
