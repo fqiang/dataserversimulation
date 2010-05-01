@@ -6,7 +6,7 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="PoissonArrival">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../eclipse_J2ee/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../My Dropbox/project/eclipse_J2ee/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
@@ -21,15 +21,7 @@
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
     </path>
-    <path id="run.TestLoadBalancer.classpath">
-        <pathelement location="log4j"/>
-        <path refid="PoissonArrival.classpath"/>
-    </path>
-    <path id="run.ServerNode_China.classpath">
-        <path refid="PoissonArrival.classpath"/>
-        <pathelement location="log4j"/>
-    </path>
-    <path id="run.ServerNode_Japan.classpath">
+    <path id="run.ServerNode_American.classpath">
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
     </path>
@@ -37,13 +29,21 @@
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
     </path>
+    <path id="run.ServerNode_China.classpath">
+        <path refid="PoissonArrival.classpath"/>
+        <pathelement location="log4j"/>
+    </path>
     <path id="run.ServerNode_Europe.classpath">
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
     </path>
-    <path id="run.ServerNode_American.classpath">
+    <path id="run.ServerNode_Japan.classpath">
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
+    </path>
+    <path id="run.TestLoadBalancer.classpath">
+        <pathelement location="log4j"/>
+        <path refid="PoissonArrival.classpath"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -92,21 +92,10 @@
             <classpath refid="PoissonArrival.classpath"/>
         </java>
     </target>
-    <target name="TestLoadBalancer">
-        <java classname="acs.project.simulation.server.TestLoadBalancer" failonerror="true" fork="yes">
-            <classpath refid="run.TestLoadBalancer.classpath"/>
-        </java>
-    </target>
-    <target name="ServerNode_China">
+    <target name="ServerNode_American">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
-            <arg line="CHINA1 CHINA 500 100000 0.5 0.7 localhost:4000"/>
-            <classpath refid="run.ServerNode_China.classpath"/>
-        </java>
-    </target>
-    <target name="ServerNode_Japan">
-        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
-            <arg line="JAPAN1 JAPAN 500 100000 0.5 0.7 localhost:4000"/>
-            <classpath refid="run.ServerNode_Japan.classpath"/>
+            <arg line="AMERICAN1 AMERICAN 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_American.classpath"/>
         </java>
     </target>
     <target name="ServerNode_Asian">
@@ -115,16 +104,27 @@
             <classpath refid="run.ServerNode_Asian.classpath"/>
         </java>
     </target>
+    <target name="ServerNode_China">
+        <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
+            <arg line="CHINA1 CHINA 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_China.classpath"/>
+        </java>
+    </target>
     <target name="ServerNode_Europe">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
             <arg line="EUROPE1 EUROPE 500 100000 0.5 0.7 localhost:4000"/>
             <classpath refid="run.ServerNode_Europe.classpath"/>
         </java>
     </target>
-    <target name="ServerNode_American">
+    <target name="ServerNode_Japan">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
-            <arg line="AMERICAN1 AMERICAN 500 100000 0.5 0.7 localhost:4000"/>
-            <classpath refid="run.ServerNode_American.classpath"/>
+            <arg line="JAPAN1 JAPAN 500 100000 0.5 0.7 localhost:4000"/>
+            <classpath refid="run.ServerNode_Japan.classpath"/>
+        </java>
+    </target>
+    <target name="TestLoadBalancer">
+        <java classname="acs.project.simulation.server.TestLoadBalancer" failonerror="true" fork="yes">
+            <classpath refid="run.TestLoadBalancer.classpath"/>
         </java>
     </target>
 </project>

@@ -12,7 +12,7 @@ import acs.project.simulation.optimization.TraceFileFilter;
 
 public class EventFeeder {
 	
-	public String trancedir = ".";
+	public String trancedir = "./trace";
 	
 	private ArrayList<BufferedReader> traceReaders = new ArrayList<BufferedReader>();
 	//private ArrayList<Long> traceTimes = new ArrayList<Long>();
