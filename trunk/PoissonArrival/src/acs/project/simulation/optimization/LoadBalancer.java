@@ -1,7 +1,6 @@
 package acs.project.simulation.optimization;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -10,19 +9,16 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
-import acs.project.simulation.server.ServerNode;
 import acs.project.simulation.dataset.common.Location;
-import acs.project.simulation.dataset.common.RequestArrivalEvent;
+import acs.project.simulation.dataset.common.RequestEvent;
 import acs.project.simulation.dataset.common.ServerConfigInfo;
 import acs.project.simulation.dataset.common.ServerStatus;
 import acs.project.simulation.dataset.common.SimulationEnd;
 import acs.project.simulation.dataset.common.StatusRequest;
 import acs.project.simulation.dataset.common.TimeStamp;
-import acs.project.simulation.optimization.*;
 
 public class LoadBalancer {
 
@@ -105,7 +101,7 @@ public class LoadBalancer {
 		while(true)
 		{
 			//Thread.currentThread().sleep(4000);
-			RequestArrivalEvent[] events = efeeder.nextEvents();
+			RequestEvent[] events = efeeder.nextEvents();
 			if(events.length==0){
 				//no more events
 				break;
@@ -120,7 +116,7 @@ public class LoadBalancer {
 			broadcast(ts);
 			
 			//then dispatching the event
-			for (RequestArrivalEvent event:events)
+			for (RequestEvent event:events)
 			{
 				totRequest++;
 				nowtime = event.getTime();
@@ -176,7 +172,7 @@ public class LoadBalancer {
 		}
 	}
 
-	public ServerProfile selectServer(RequestArrivalEvent event) throws IOException, ClassNotFoundException
+	public ServerProfile selectServer(RequestEvent event) throws IOException, ClassNotFoundException
 	{
 		/*
 		 * this is a very simple strategy finding a free server in the area(location)

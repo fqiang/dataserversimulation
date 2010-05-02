@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import acs.project.simulation.dataset.common.RequestArrivalEvent;
+import acs.project.simulation.dataset.common.RequestEvent;
 import acs.project.simulation.optimization.TraceFileFilter;
 
 public class EventFeeder {
@@ -29,10 +29,10 @@ public class EventFeeder {
 		}
 	}
 	
-	public RequestArrivalEvent[] nextEvents() throws IOException
+	public RequestEvent[] nextEvents() throws IOException
 	{
 		ArrayList<BufferedReader> readers = new ArrayList<BufferedReader>();
-		RequestArrivalEvent[] events = null;
+		RequestEvent[] events = null;
 		
 		long min = 0;
 		//int min_index = 0;
@@ -45,7 +45,7 @@ public class EventFeeder {
 			if(csvline != null)
 			{
 					
-				RequestArrivalEvent event = RequestArrivalEvent.fromString(csvline);
+				RequestEvent event = RequestEvent.fromString(csvline);
 				long time = event.getTime();
 				
 				if(min==0)
@@ -70,15 +70,15 @@ public class EventFeeder {
 		if(readers.size()==0)
 		{
 			assert min==0;
-			return new RequestArrivalEvent[]{};//no more event
+			return new RequestEvent[]{};//no more event
 		}
 		else
 		{
-			events = new RequestArrivalEvent[readers.size()];
+			events = new RequestEvent[readers.size()];
 			
 			for(int i=0;i<events.length;i++)
 			{
-				events[i] = RequestArrivalEvent.fromString(readers.get(i).readLine());
+				events[i] = RequestEvent.fromString(readers.get(i).readLine());
 			}
 			return events;
 		}

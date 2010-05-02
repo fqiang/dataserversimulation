@@ -6,7 +6,7 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="PoissonArrival">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../My Dropbox/project/eclipse_J2ee/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../eclipse_J2ee/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
@@ -41,7 +41,7 @@
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
     </path>
-    <path id="run.TestLoadBalancer.classpath">
+    <path id="run.MyLittleTest.classpath">
         <pathelement location="log4j"/>
         <path refid="PoissonArrival.classpath"/>
     </path>
@@ -122,9 +122,9 @@
             <classpath refid="run.ServerNode_Japan.classpath"/>
         </java>
     </target>
-    <target name="TestLoadBalancer">
-        <java classname="acs.project.simulation.server.TestLoadBalancer" failonerror="true" fork="yes">
-            <classpath refid="run.TestLoadBalancer.classpath"/>
+    <target name="MyLittleTest">
+        <java classname="acs.project.simulation.server.MyLittleTest" failonerror="true" fork="yes">
+            <classpath refid="run.MyLittleTest.classpath"/>
         </java>
     </target>
 </project>

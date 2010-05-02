@@ -1,10 +1,10 @@
 package acs.project.simulation.server;
 
-import acs.project.simulation.dataset.common.RequestArrivalEvent;
+import acs.project.simulation.dataset.common.RequestEvent;
 
 public class Request {
 
-	private RequestArrivalEvent event  = null;
+	private RequestEvent event  = null;
 	
 	//status
 	private long sizeLeft = 0;
@@ -18,7 +18,7 @@ public class Request {
 	private long initSpeed = 0;
 	private long maxSpeed = 0;
 	
-	public Request(RequestArrivalEvent aEvent,long connEst,long rampUp,long maxspeed,long initspeed) {
+	public Request(RequestEvent aEvent,long connEst,long rampUp,long maxspeed,long initspeed) {
 		//delegated
 		event = aEvent;
 		
@@ -35,11 +35,11 @@ public class Request {
 		initSpeed = initspeed;
 	}
 	
-	public void setEvent(RequestArrivalEvent event) {
+	public void setEvent(RequestEvent event) {
 		this.event = event;
 	}
 
-	public RequestArrivalEvent getEvent() {
+	public RequestEvent getEvent() {
 		return event;
 	}
 

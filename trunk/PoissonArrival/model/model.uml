@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_5RJTEFWMEd-z_KyQMFkSXg">
+  <name xsi:nil="true"/>
+  <packagedElement xmi:type="uml:Package" xmi:id="_5RJ6IFWMEd-z_KyQMFkSXg" name="acs">
+    <packagedElement xmi:type="uml:Package" xmi:id="_5RJ6IVWMEd-z_KyQMFkSXg" name="project">
+      <packagedElement xmi:type="uml:Package" xmi:id="_5RKhMFWMEd-z_KyQMFkSXg" name="simulation">
+        <packagedElement xmi:type="uml:Package" xmi:id="_5RM9cVWMEd-z_KyQMFkSXg" name="optimization">
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RM9clWMEd-z_KyQMFkSXg" name="TraceFileFilter">
+            <ownedOperation xmi:id="_5S_GIlWMEd-z_KyQMFkSXg" name="accept" visibility="public">
+              <ownedParameter xmi:id="_5S_GI1WMEd-z_KyQMFkSXg" name="pathname" type="_5S_GIFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5S_GJFWMEd-z_KyQMFkSXg" name="return" type="_5S_GIVWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Enumeration" xmi:id="_5RM9c1WMEd-z_KyQMFkSXg" name="EnergyType">
+            <ownedLiteral xmi:id="_5S_GJVWMEd-z_KyQMFkSXg" name="CONVENSIONAL"/>
+            <ownedLiteral xmi:id="_5S_tMFWMEd-z_KyQMFkSXg" name="SUSTAINABLE"/>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RM9dFWMEd-z_KyQMFkSXg" name="EventFeeder">
+            <ownedAttribute xmi:id="_5S_tMVWMEd-z_KyQMFkSXg" name="trancedir" visibility="public" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            <ownedOperation xmi:id="_5TAUQFWMEd-z_KyQMFkSXg" name="nextEvents" visibility="public">
+              <ownedParameter xmi:id="_5TAUQVWMEd-z_KyQMFkSXg" name="return" type="_5RKhNFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RNkgFWMEd-z_KyQMFkSXg" name="ServerProfile">
+            <ownedOperation xmi:id="_5TBiYFWMEd-z_KyQMFkSXg" name="getStatus" visibility="public">
+              <ownedParameter xmi:id="_5TBiYVWMEd-z_KyQMFkSXg" name="return" type="_5RLIQVWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TCwgFWMEd-z_KyQMFkSXg" name="setStatus" visibility="public">
+              <ownedParameter xmi:id="_5TCwgVWMEd-z_KyQMFkSXg" name="status" type="_5RLIQVWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TD-oVWMEd-z_KyQMFkSXg" name="getSocket" visibility="public">
+              <ownedParameter xmi:id="_5TD-olWMEd-z_KyQMFkSXg" name="return" type="_5TD-oFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TElsFWMEd-z_KyQMFkSXg" name="setSocket" visibility="public">
+              <ownedParameter xmi:id="_5TElsVWMEd-z_KyQMFkSXg" name="socket" type="_5TD-oFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TFz0VWMEd-z_KyQMFkSXg" name="getOos" visibility="public">
+              <ownedParameter xmi:id="_5TFz0lWMEd-z_KyQMFkSXg" name="return" type="_5TFz0FWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TGa4FWMEd-z_KyQMFkSXg" name="setOos" visibility="public">
+              <ownedParameter xmi:id="_5TGa4VWMEd-z_KyQMFkSXg" name="oos" type="_5TFz0FWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5THpAVWMEd-z_KyQMFkSXg" name="getOis" visibility="public">
+              <ownedParameter xmi:id="_5THpAlWMEd-z_KyQMFkSXg" name="return" type="_5THpAFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TIQEFWMEd-z_KyQMFkSXg" name="setOis" visibility="public">
+              <ownedParameter xmi:id="_5TIQEVWMEd-z_KyQMFkSXg" name="ois" type="_5THpAFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TJeMFWMEd-z_KyQMFkSXg" name="getInfo" visibility="public">
+              <ownedParameter xmi:id="_5TJeMVWMEd-z_KyQMFkSXg" name="return" type="_5RLvUVWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TKsUFWMEd-z_KyQMFkSXg" name="setInfo" visibility="public">
+              <ownedParameter xmi:id="_5TKsUVWMEd-z_KyQMFkSXg" name="info" type="_5RLvUVWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RNkgVWMEd-z_KyQMFkSXg" name="LoadBalancer">
+            <ownedAttribute xmi:id="_5TLTYFWMEd-z_KyQMFkSXg" name="log" visibility="public" isStatic="true" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+            <ownedAttribute xmi:id="_5TLTYVWMEd-z_KyQMFkSXg" name="DEFAULT_LB_PORT" visibility="public" isStatic="true" type="_5RWHYVWMEd-z_KyQMFkSXg">
+              <defaultValue xmi:type="uml:LiteralInteger" xmi:id="_5TLTYlWMEd-z_KyQMFkSXg" name="" type="_5RWHYVWMEd-z_KyQMFkSXg" value="4000"/>
+            </ownedAttribute>
+            <ownedAttribute xmi:id="_5TLTY1WMEd-z_KyQMFkSXg" name="DEFAULT_LB_ADDR" visibility="public" isStatic="true" type="_5RfRUFWMEd-z_KyQMFkSXg">
+              <defaultValue xmi:type="uml:LiteralString" xmi:id="_5TLTZFWMEd-z_KyQMFkSXg" name="" type="_5RfRUFWMEd-z_KyQMFkSXg" value="&quot;localhost&quot;"/>
+            </ownedAttribute>
+            <ownedAttribute xmi:id="_5TLTZVWMEd-z_KyQMFkSXg" name="DEAFAULT_TOTAL_SERVERS" visibility="public" isStatic="true" type="_5RWHYVWMEd-z_KyQMFkSXg">
+              <defaultValue xmi:type="uml:LiteralInteger" xmi:id="_5TLTZlWMEd-z_KyQMFkSXg" name="" type="_5RWHYVWMEd-z_KyQMFkSXg" value="3"/>
+            </ownedAttribute>
+            <ownedOperation xmi:id="_5TNvoFWMEd-z_KyQMFkSXg" name="register" visibility="public"/>
+            <ownedOperation xmi:id="_5TPk0FWMEd-z_KyQMFkSXg" name="running" visibility="public"/>
+            <ownedOperation xmi:id="_5TSBEFWMEd-z_KyQMFkSXg" name="selectServer" visibility="public">
+              <ownedParameter xmi:id="_5TSBEVWMEd-z_KyQMFkSXg" name="event" type="_5RKhNFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5TSBElWMEd-z_KyQMFkSXg" name="return" type="_5RNkgFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TT2QFWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5TT2QVWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:DataType" xmi:id="_5S_GIFWMEd-z_KyQMFkSXg" name="File"/>
+          <packagedElement xmi:type="uml:DataType" xmi:id="_5S_GIVWMEd-z_KyQMFkSXg" name="boolean"/>
+          <packagedElement xmi:type="uml:DataType" xmi:id="_5TD-oFWMEd-z_KyQMFkSXg" name="Socket"/>
+          <packagedElement xmi:type="uml:DataType" xmi:id="_5TFz0FWMEd-z_KyQMFkSXg" name="ObjectOutputStream"/>
+          <packagedElement xmi:type="uml:DataType" xmi:id="_5THpAFWMEd-z_KyQMFkSXg" name="ObjectInputStream"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_5RNkglWMEd-z_KyQMFkSXg" name="random">
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RNkg1WMEd-z_KyQMFkSXg" name="LognorRandom">
+            <ownedOperation xmi:id="_5TVEYFWMEd-z_KyQMFkSXg" name="getPDF" visibility="public">
+              <ownedParameter xmi:id="_5TVEYVWMEd-z_KyQMFkSXg" name="x" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5TVEYlWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TVrcFWMEd-z_KyQMFkSXg" name="nextLognorDouble" visibility="public">
+              <ownedParameter xmi:id="_5TVrcVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TW5kFWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5TW5kVWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RNkhFWMEd-z_KyQMFkSXg" name="ZipfRandom">
+            <ownedAttribute xmi:id="_5TW5klWMEd-z_KyQMFkSXg" name="log" visibility="public" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+            <ownedOperation xmi:id="_5TXgoFWMEd-z_KyQMFkSXg" name="reSeed" visibility="public">
+              <ownedParameter xmi:id="_5TXgoVWMEd-z_KyQMFkSXg" name="seed" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TYuwFWMEd-z_KyQMFkSXg" name="nextZipf" visibility="public">
+              <ownedParameter xmi:id="_5TYuwVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYVWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TZV0FWMEd-z_KyQMFkSXg" name="getProbability" visibility="public">
+              <ownedParameter xmi:id="_5TZV0VWMEd-z_KyQMFkSXg" name="rank" type="_5RWHYVWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5TZV0lWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Taj8FWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5Taj8VWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5ROLkFWMEd-z_KyQMFkSXg" name="ExpRandom">
+            <ownedAttribute xmi:id="_5Taj8lWMEd-z_KyQMFkSXg" name="log" visibility="public" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+            <ownedOperation xmi:id="_5TbyEFWMEd-z_KyQMFkSXg" name="reSeed" visibility="public">
+              <ownedParameter xmi:id="_5TbyEVWMEd-z_KyQMFkSXg" name="seed" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TcZIFWMEd-z_KyQMFkSXg" name="nextExpDouble" visibility="public">
+              <ownedParameter xmi:id="_5TcZIVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TdAMFWMEd-z_KyQMFkSXg" name="getLamda" visibility="public">
+              <ownedParameter xmi:id="_5TdAMVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TeOUFWMEd-z_KyQMFkSXg" name="setLamda" visibility="public">
+              <ownedParameter xmi:id="_5TeOUVWMEd-z_KyQMFkSXg" name="lamda" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TfccFWMEd-z_KyQMFkSXg" name="getCDF" visibility="public">
+              <ownedParameter xmi:id="_5TfccVWMEd-z_KyQMFkSXg" name="i" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5TfcclWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TgqkFWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5TgqkVWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_5RKhMVWMEd-z_KyQMFkSXg" name="dataset">
+          <packagedElement xmi:type="uml:Class" xmi:id="_5RKhMlWMEd-z_KyQMFkSXg" name="RequestEventGenerator">
+            <ownedAttribute xmi:id="_5RQn0FWMEd-z_KyQMFkSXg" name="log" visibility="public" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+            <ownedOperation xmi:id="_5RWucFWMEd-z_KyQMFkSXg" name="initGenerator" visibility="public">
+              <ownedParameter xmi:id="_5RWucVWMEd-z_KyQMFkSXg" name="seed" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RWuclWMEd-z_KyQMFkSXg" name="lamda" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RWuc1WMEd-z_KyQMFkSXg" name="mean" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RWudFWMEd-z_KyQMFkSXg" name="stdd" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RWudVWMEd-z_KyQMFkSXg" name="size" type="_5RWHYVWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RWudlWMEd-z_KyQMFkSXg" name="skew" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Rc1EFWMEd-z_KyQMFkSXg" name="start" visibility="public"/>
+            <ownedOperation xmi:id="_5RfRUVWMEd-z_KyQMFkSXg" name="testGenerate_1hr" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5RfRUlWMEd-z_KyQMFkSXg" name="loc" type="_5RLvUlWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RfRU1WMEd-z_KyQMFkSXg" name="zone" type="_5RLvUFWMEd-z_KyQMFkSXg"/>
+              <ownedParameter xmi:id="_5RfRVFWMEd-z_KyQMFkSXg" name="filename" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5RhGgFWMEd-z_KyQMFkSXg" name="testGenerate_24hr" visibility="public" isStatic="true"/>
+            <ownedOperation xmi:id="_5Ri7sFWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5Ri7sVWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_5RKhM1WMEd-z_KyQMFkSXg" name="common">
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RLIQFWMEd-z_KyQMFkSXg" name="TimeStamp">
+              <ownedOperation xmi:id="_5R_AkFWMEd-z_KyQMFkSXg" name="setCurrTime" visibility="public">
+                <ownedParameter xmi:id="_5R_AkVWMEd-z_KyQMFkSXg" name="currTime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5R_noFWMEd-z_KyQMFkSXg" name="getCurrTime" visibility="public">
+                <ownedParameter xmi:id="_5R_noVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RLIQVWMEd-z_KyQMFkSXg" name="ServerStatus">
+              <ownedOperation xmi:id="_5SBc0FWMEd-z_KyQMFkSXg" name="toString" visibility="public">
+                <ownedParameter xmi:id="_5SBc0VWMEd-z_KyQMFkSXg" name="return" type="_5RfRUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SDSAFWMEd-z_KyQMFkSXg" name="setCurrBW" visibility="public">
+                <ownedParameter xmi:id="_5SDSAVWMEd-z_KyQMFkSXg" name="currBW" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SEgIFWMEd-z_KyQMFkSXg" name="getCurrBW" visibility="public">
+                <ownedParameter xmi:id="_5SEgIVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SG8YFWMEd-z_KyQMFkSXg" name="setCurrLoad" visibility="public">
+                <ownedParameter xmi:id="_5SG8YVWMEd-z_KyQMFkSXg" name="currLoad" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SIxkFWMEd-z_KyQMFkSXg" name="getCurrLoad" visibility="public">
+                <ownedParameter xmi:id="_5SIxkVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SKmwFWMEd-z_KyQMFkSXg" name="setCurrNumReqs" visibility="public">
+                <ownedParameter xmi:id="_5SKmwVWMEd-z_KyQMFkSXg" name="currNumReqs" type="_5RWHYVWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SMb8FWMEd-z_KyQMFkSXg" name="getCurrNumReqs" visibility="public">
+                <ownedParameter xmi:id="_5SMb8VWMEd-z_KyQMFkSXg" name="return" type="_5RWHYVWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SO4MFWMEd-z_KyQMFkSXg" name="setCurrTime" visibility="public">
+                <ownedParameter xmi:id="_5SO4MVWMEd-z_KyQMFkSXg" name="currTime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SQtYFWMEd-z_KyQMFkSXg" name="getCurrTime" visibility="public">
+                <ownedParameter xmi:id="_5SQtYVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SSikFWMEd-z_KyQMFkSXg" name="setRequestHandled" visibility="public">
+                <ownedParameter xmi:id="_5SSikVWMEd-z_KyQMFkSXg" name="requestHandled" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SUXwFWMEd-z_KyQMFkSXg" name="getRequestHandled" visibility="public">
+                <ownedParameter xmi:id="_5SUXwVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SWM8FWMEd-z_KyQMFkSXg" name="setCurrPower" visibility="public">
+                <ownedParameter xmi:id="_5SWM8VWMEd-z_KyQMFkSXg" name="currPower" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SYCIFWMEd-z_KyQMFkSXg" name="getCurrPower" visibility="public">
+                <ownedParameter xmi:id="_5SYCIVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SZ3UFWMEd-z_KyQMFkSXg" name="setCurrTolConsumption" visibility="public">
+                <ownedParameter xmi:id="_5SZ3UVWMEd-z_KyQMFkSXg" name="currTolConsumption" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SbsgFWMEd-z_KyQMFkSXg" name="getCurrTolConsumption" visibility="public">
+                <ownedParameter xmi:id="_5SbsgVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RLIQlWMEd-z_KyQMFkSXg" name="StatusRequest"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RLIQ1WMEd-z_KyQMFkSXg" name="SimulationEnd"/>
+            <packagedElement xmi:type="uml:Enumeration" xmi:id="_5RLvUFWMEd-z_KyQMFkSXg" name="Timezone">
+              <ownedAttribute xmi:id="_5Sc6oFWMEd-z_KyQMFkSXg" name="gmt_value" visibility="private" type="_5RWHYVWMEd-z_KyQMFkSXg"/>
+              <ownedOperation xmi:id="_5SdhsFWMEd-z_KyQMFkSXg" name="getGMT" visibility="public">
+                <ownedParameter xmi:id="_5SdhsVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYVWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedLiteral xmi:id="_5SbsglWMEd-z_KyQMFkSXg" name="GMT_0"/>
+              <ownedLiteral xmi:id="_5Sbsg1WMEd-z_KyQMFkSXg" name="GMT_1"/>
+              <ownedLiteral xmi:id="_5SbshFWMEd-z_KyQMFkSXg" name="GMT_2"/>
+              <ownedLiteral xmi:id="_5SbshVWMEd-z_KyQMFkSXg" name="GMT_3"/>
+              <ownedLiteral xmi:id="_5SbshlWMEd-z_KyQMFkSXg" name="GMT_4"/>
+              <ownedLiteral xmi:id="_5Sbsh1WMEd-z_KyQMFkSXg" name="GMT_5"/>
+              <ownedLiteral xmi:id="_5SbsiFWMEd-z_KyQMFkSXg" name="GMT_6"/>
+              <ownedLiteral xmi:id="_5SbsiVWMEd-z_KyQMFkSXg" name="GMT_7"/>
+              <ownedLiteral xmi:id="_5SbsilWMEd-z_KyQMFkSXg" name="GMT_8"/>
+              <ownedLiteral xmi:id="_5ScTkFWMEd-z_KyQMFkSXg" name="GMT_9"/>
+              <ownedLiteral xmi:id="_5ScTkVWMEd-z_KyQMFkSXg" name="GMT_10"/>
+              <ownedLiteral xmi:id="_5ScTklWMEd-z_KyQMFkSXg" name="GMT_11"/>
+              <ownedLiteral xmi:id="_5ScTk1WMEd-z_KyQMFkSXg" name="GMT_12"/>
+              <ownedLiteral xmi:id="_5ScTlFWMEd-z_KyQMFkSXg" name="GMT_N1"/>
+              <ownedLiteral xmi:id="_5ScTlVWMEd-z_KyQMFkSXg" name="GMT_N2"/>
+              <ownedLiteral xmi:id="_5ScTllWMEd-z_KyQMFkSXg" name="GMT_N3"/>
+              <ownedLiteral xmi:id="_5ScTl1WMEd-z_KyQMFkSXg" name="GMT_N4"/>
+              <ownedLiteral xmi:id="_5ScTmFWMEd-z_KyQMFkSXg" name="GMT_N5"/>
+              <ownedLiteral xmi:id="_5ScTmVWMEd-z_KyQMFkSXg" name="GMT_N6"/>
+              <ownedLiteral xmi:id="_5ScTmlWMEd-z_KyQMFkSXg" name="GMT_N7"/>
+              <ownedLiteral xmi:id="_5ScTm1WMEd-z_KyQMFkSXg" name="GMT_N8"/>
+              <ownedLiteral xmi:id="_5ScTnFWMEd-z_KyQMFkSXg" name="GMT_N9"/>
+              <ownedLiteral xmi:id="_5ScTnVWMEd-z_KyQMFkSXg" name="GMT_N10"/>
+              <ownedLiteral xmi:id="_5ScTnlWMEd-z_KyQMFkSXg" name="GMT_N11"/>
+              <ownedLiteral xmi:id="_5ScTn1WMEd-z_KyQMFkSXg" name="GMT_N12"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RLvUVWMEd-z_KyQMFkSXg" name="ServerConfigInfo">
+              <ownedOperation xmi:id="_5SfW4FWMEd-z_KyQMFkSXg" name="toString" visibility="public">
+                <ownedParameter xmi:id="_5SfW4VWMEd-z_KyQMFkSXg" name="return" type="_5RfRUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5ShMEFWMEd-z_KyQMFkSXg" name="setLocation" visibility="public">
+                <ownedParameter xmi:id="_5ShMEVWMEd-z_KyQMFkSXg" name="location" type="_5RLvUlWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SjBQFWMEd-z_KyQMFkSXg" name="getLocation" visibility="public">
+                <ownedParameter xmi:id="_5SjBQVWMEd-z_KyQMFkSXg" name="return" type="_5RLvUlWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5Sk2cFWMEd-z_KyQMFkSXg" name="setMaxBW" visibility="public">
+                <ownedParameter xmi:id="_5Sk2cVWMEd-z_KyQMFkSXg" name="max_bindwidth" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SmroFWMEd-z_KyQMFkSXg" name="getMaxBW" visibility="public">
+                <ownedParameter xmi:id="_5SmroVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5Sog0FWMEd-z_KyQMFkSXg" name="setMaxConcurrentRequest" visibility="public">
+                <ownedParameter xmi:id="_5Sog0VWMEd-z_KyQMFkSXg" name="maxConRequest" type="_5RWHYVWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5Spu8FWMEd-z_KyQMFkSXg" name="getMaxConcurrentRequest" visibility="public">
+                <ownedParameter xmi:id="_5Spu8VWMEd-z_KyQMFkSXg" name="return" type="_5RWHYVWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SsLMFWMEd-z_KyQMFkSXg" name="setServerName" visibility="public">
+                <ownedParameter xmi:id="_5SsLMVWMEd-z_KyQMFkSXg" name="serverName" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SuAYFWMEd-z_KyQMFkSXg" name="getServerName" visibility="public">
+                <ownedParameter xmi:id="_5SuAYVWMEd-z_KyQMFkSXg" name="return" type="_5RfRUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5Sv1kFWMEd-z_KyQMFkSXg" name="setMaxPower" visibility="public">
+                <ownedParameter xmi:id="_5Sv1kVWMEd-z_KyQMFkSXg" name="maxPower" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5SxqwFWMEd-z_KyQMFkSXg" name="getMaxPower" visibility="public">
+                <ownedParameter xmi:id="_5SxqwVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5Szf8FWMEd-z_KyQMFkSXg" name="setIdlePowerRate" visibility="public">
+                <ownedParameter xmi:id="_5Szf8VWMEd-z_KyQMFkSXg" name="idlePowerRate" type="_5RWHYFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S1VIFWMEd-z_KyQMFkSXg" name="getIdlePowerRate" visibility="public">
+                <ownedParameter xmi:id="_5S1VIVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Enumeration" xmi:id="_5RLvUlWMEd-z_KyQMFkSXg" name="Location">
+              <ownedLiteral xmi:id="_5S1VIlWMEd-z_KyQMFkSXg" name="CHINA"/>
+              <ownedLiteral xmi:id="_5S1VI1WMEd-z_KyQMFkSXg" name="JAPAN"/>
+              <ownedLiteral xmi:id="_5S1VJFWMEd-z_KyQMFkSXg" name="ASIAN"/>
+              <ownedLiteral xmi:id="_5S1VJVWMEd-z_KyQMFkSXg" name="EUROPE"/>
+              <ownedLiteral xmi:id="_5S18MFWMEd-z_KyQMFkSXg" name="AMERICAN"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RLvU1WMEd-z_KyQMFkSXg" name="OrderComparator">
+              <ownedOperation xmi:id="_5S2jQVWMEd-z_KyQMFkSXg" name="compare" visibility="public">
+                <ownedParameter xmi:id="_5S2jQlWMEd-z_KyQMFkSXg" name="f0" type="_5S2jQFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S2jQ1WMEd-z_KyQMFkSXg" name="f1" type="_5S2jQFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S2jRFWMEd-z_KyQMFkSXg" name="return" type="_5RWHYVWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_5RMWYFWMEd-z_KyQMFkSXg" name="@Order"/>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5S2jQFWMEd-z_KyQMFkSXg" name="Field"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RKhNFWMEd-z_KyQMFkSXg" name="RequestEvent">
+              <ownedOperation xmi:id="_5RlX8FWMEd-z_KyQMFkSXg" name="fromString" visibility="public" isStatic="true">
+                <ownedParameter xmi:id="_5RlX8VWMEd-z_KyQMFkSXg" name="csvline" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5RlX8lWMEd-z_KyQMFkSXg" name="return" type="_5RKhNFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RnNIFWMEd-z_KyQMFkSXg" name="toString" visibility="public">
+                <ownedParameter xmi:id="_5RnNIVWMEd-z_KyQMFkSXg" name="return" type="_5RfRUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RpCUFWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+                <ownedParameter xmi:id="_5RpCUVWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RrekFWMEd-z_KyQMFkSXg" name="setTime" visibility="public">
+                <ownedParameter xmi:id="_5RrekVWMEd-z_KyQMFkSXg" name="time" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RtTwFWMEd-z_KyQMFkSXg" name="getTime" visibility="public">
+                <ownedParameter xmi:id="_5RtTwVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RvwAFWMEd-z_KyQMFkSXg" name="getLocation" visibility="public">
+                <ownedParameter xmi:id="_5RvwAVWMEd-z_KyQMFkSXg" name="return" type="_5RLvUlWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RxlMFWMEd-z_KyQMFkSXg" name="setLocation" visibility="public">
+                <ownedParameter xmi:id="_5RxlMVWMEd-z_KyQMFkSXg" name="location" type="_5RLvUlWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5RzaYFWMEd-z_KyQMFkSXg" name="getTimezone" visibility="public">
+                <ownedParameter xmi:id="_5RzaYVWMEd-z_KyQMFkSXg" name="return" type="_5RLvUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5R12oFWMEd-z_KyQMFkSXg" name="setTimezone" visibility="public">
+                <ownedParameter xmi:id="_5R12oVWMEd-z_KyQMFkSXg" name="timezone" type="_5RLvUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5R3r0FWMEd-z_KyQMFkSXg" name="getSize" visibility="public">
+                <ownedParameter xmi:id="_5R3r0VWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5R6IEFWMEd-z_KyQMFkSXg" name="setSize" visibility="public">
+                <ownedParameter xmi:id="_5R6IEVWMEd-z_KyQMFkSXg" name="size" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5R79QFWMEd-z_KyQMFkSXg" name="getRank" visibility="public">
+                <ownedParameter xmi:id="_5R79QVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYVWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5R9ycFWMEd-z_KyQMFkSXg" name="setRank" visibility="public">
+                <ownedParameter xmi:id="_5R9ycVWMEd-z_KyQMFkSXg" name="rank" type="_5RWHYVWMEd-z_KyQMFkSXg"/>
+              </ownedOperation>
+            </packagedElement>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_5RMWYVWMEd-z_KyQMFkSXg" name="strategy">
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RMWYlWMEd-z_KyQMFkSXg" name="OneHourHalfHourStrategy" clientDependency="_5S2jRVWMEd-z_KyQMFkSXg">
+              <ownedAttribute xmi:id="_5S3KUFWMEd-z_KyQMFkSXg" name="log" visibility="public" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+              <interfaceRealization xmi:id="_5S2jRVWMEd-z_KyQMFkSXg" name="RequestEventGenerationStrategy" supplier="_5RMWY1WMEd-z_KyQMFkSXg" client="_5RMWYlWMEd-z_KyQMFkSXg" contract="_5RMWY1WMEd-z_KyQMFkSXg"/>
+              <ownedOperation xmi:id="_5S3xYFWMEd-z_KyQMFkSXg" name="getNextLamda" visibility="public">
+                <ownedParameter xmi:id="_5S3xYVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S4_gVWMEd-z_KyQMFkSXg" name="isGenerationEnd" visibility="public">
+                <ownedParameter xmi:id="_5S4_glWMEd-z_KyQMFkSXg" name="currtime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S4_g1WMEd-z_KyQMFkSXg" name="return" type="_5S4_gFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S6NoFWMEd-z_KyQMFkSXg" name="isProceedToNextArrivalRate" visibility="public">
+                <ownedParameter xmi:id="_5S6NoVWMEd-z_KyQMFkSXg" name="currtime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S6NolWMEd-z_KyQMFkSXg" name="return" type="_5S4_gFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_5RMWY1WMEd-z_KyQMFkSXg" name="RequestEventGenerationStrategy">
+              <ownedOperation xmi:id="_5S6No1WMEd-z_KyQMFkSXg" name="isGenerationEnd" visibility="public">
+                <ownedParameter xmi:id="_5S6NpFWMEd-z_KyQMFkSXg" name="time" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S6NpVWMEd-z_KyQMFkSXg" name="return" type="_5S4_gFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S60sFWMEd-z_KyQMFkSXg" name="getNextLamda" visibility="public">
+                <ownedParameter xmi:id="_5S60sVWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S7bwFWMEd-z_KyQMFkSXg" name="isProceedToNextArrivalRate" visibility="public">
+                <ownedParameter xmi:id="_5S7bwVWMEd-z_KyQMFkSXg" name="currtime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S7bwlWMEd-z_KyQMFkSXg" name="return" type="_5S4_gFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5RM9cFWMEd-z_KyQMFkSXg" name="Hour24PerHourStrategy" clientDependency="_5S7bw1WMEd-z_KyQMFkSXg">
+              <ownedAttribute xmi:id="_5S7bxFWMEd-z_KyQMFkSXg" name="log" visibility="public" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+              <interfaceRealization xmi:id="_5S7bw1WMEd-z_KyQMFkSXg" name="RequestEventGenerationStrategy" supplier="_5RMWY1WMEd-z_KyQMFkSXg" client="_5RM9cFWMEd-z_KyQMFkSXg" contract="_5RMWY1WMEd-z_KyQMFkSXg"/>
+              <ownedOperation xmi:id="_5S8p4FWMEd-z_KyQMFkSXg" name="getNextLamda" visibility="public">
+                <ownedParameter xmi:id="_5S8p4VWMEd-z_KyQMFkSXg" name="return" type="_5RWHYFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S9Q8FWMEd-z_KyQMFkSXg" name="isGenerationEnd" visibility="public">
+                <ownedParameter xmi:id="_5S9Q8VWMEd-z_KyQMFkSXg" name="currtime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S9Q8lWMEd-z_KyQMFkSXg" name="return" type="_5S4_gFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5S-fEFWMEd-z_KyQMFkSXg" name="isProceedToNextArrivalRate" visibility="public">
+                <ownedParameter xmi:id="_5S-fEVWMEd-z_KyQMFkSXg" name="currtime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+                <ownedParameter xmi:id="_5S-fElWMEd-z_KyQMFkSXg" name="return" type="_5S4_gFWMEd-z_KyQMFkSXg" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5S4_gFWMEd-z_KyQMFkSXg" name="boolean"/>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5RfRUFWMEd-z_KyQMFkSXg" name="String"/>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5RWHYVWMEd-z_KyQMFkSXg" name="int"/>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5RWHYFWMEd-z_KyQMFkSXg" name="double"/>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5RVgUFWMEd-z_KyQMFkSXg" name="long"/>
+            <packagedElement xmi:type="uml:DataType" xmi:id="_5RQAwFWMEd-z_KyQMFkSXg" name="Logger"/>
+          </packagedElement>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_5ROLkVWMEd-z_KyQMFkSXg" name="server">
+          <packagedElement xmi:type="uml:Class" xmi:id="_5ROLklWMEd-z_KyQMFkSXg" name="Request">
+            <ownedOperation xmi:id="_5Th4sFWMEd-z_KyQMFkSXg" name="setEvent" visibility="public">
+              <ownedParameter xmi:id="_5Th4sVWMEd-z_KyQMFkSXg" name="event" type="_5RKhNFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TjG0FWMEd-z_KyQMFkSXg" name="getEvent" visibility="public">
+              <ownedParameter xmi:id="_5TjG0VWMEd-z_KyQMFkSXg" name="return" type="_5RKhNFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Tjt4FWMEd-z_KyQMFkSXg" name="setSizeLeft" visibility="public">
+              <ownedParameter xmi:id="_5Tjt4VWMEd-z_KyQMFkSXg" name="size" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Tk8AFWMEd-z_KyQMFkSXg" name="getSizeLeft" visibility="public">
+              <ownedParameter xmi:id="_5Tk8AVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TmKIFWMEd-z_KyQMFkSXg" name="setTimeAlive" visibility="public">
+              <ownedParameter xmi:id="_5TmKIVWMEd-z_KyQMFkSXg" name="timeAlive" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TnYQFWMEd-z_KyQMFkSXg" name="getTimeAlive" visibility="public">
+              <ownedParameter xmi:id="_5TnYQVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TomYFWMEd-z_KyQMFkSXg" name="setCurrSpeed" visibility="public">
+              <ownedParameter xmi:id="_5TomYVWMEd-z_KyQMFkSXg" name="currSpeed" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Tp0gFWMEd-z_KyQMFkSXg" name="getCurrSpeed" visibility="public">
+              <ownedParameter xmi:id="_5Tp0gVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TrCoFWMEd-z_KyQMFkSXg" name="setRamupTime" visibility="public">
+              <ownedParameter xmi:id="_5TrCoVWMEd-z_KyQMFkSXg" name="rampuptime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TsQwFWMEd-z_KyQMFkSXg" name="getRamupTime" visibility="public">
+              <ownedParameter xmi:id="_5TsQwVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Tte4FWMEd-z_KyQMFkSXg" name="setMaxSpeed" visibility="public">
+              <ownedParameter xmi:id="_5Tte4VWMEd-z_KyQMFkSXg" name="maxSpeed" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TutAFWMEd-z_KyQMFkSXg" name="getMaxSpeed" visibility="public">
+              <ownedParameter xmi:id="_5TutAVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5Tv7IFWMEd-z_KyQMFkSXg" name="setState" visibility="public">
+              <ownedParameter xmi:id="_5TwiMFWMEd-z_KyQMFkSXg" name="state" type="_5RPZsFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TxJQFWMEd-z_KyQMFkSXg" name="getState" visibility="public">
+              <ownedParameter xmi:id="_5TxJQVWMEd-z_KyQMFkSXg" name="return" type="_5RPZsFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5TyXYFWMEd-z_KyQMFkSXg" name="setConnEstTime" visibility="public">
+              <ownedParameter xmi:id="_5TyXYVWMEd-z_KyQMFkSXg" name="connEstTime" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5T0MkFWMEd-z_KyQMFkSXg" name="getConnEstTime" visibility="public">
+              <ownedParameter xmi:id="_5T0MkVWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5T1asFWMEd-z_KyQMFkSXg" name="setInitSpeed" visibility="public">
+              <ownedParameter xmi:id="_5T1asVWMEd-z_KyQMFkSXg" name="initSpeed" type="_5RVgUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+            <ownedOperation xmi:id="_5T2o0FWMEd-z_KyQMFkSXg" name="getInitSpeed" visibility="public">
+              <ownedParameter xmi:id="_5T2o0VWMEd-z_KyQMFkSXg" name="return" type="_5RVgUFWMEd-z_KyQMFkSXg" direction="return"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5ROyoFWMEd-z_KyQMFkSXg" name="MyLittleTest">
+            <ownedAttribute xmi:id="_5T2o0lWMEd-z_KyQMFkSXg" name="log" visibility="public" isStatic="true" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+            <ownedOperation xmi:id="_5T328FWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5T328VWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Class" xmi:id="_5ROyoVWMEd-z_KyQMFkSXg" name="ServerNode">
+            <ownedAttribute xmi:id="_5T328lWMEd-z_KyQMFkSXg" name="log" visibility="public" isStatic="true" type="_5RQAwFWMEd-z_KyQMFkSXg"/>
+            <ownedOperation xmi:id="_5T8IYFWMEd-z_KyQMFkSXg" name="register" visibility="public"/>
+            <ownedOperation xmi:id="_5T_ywFWMEd-z_KyQMFkSXg" name="running" visibility="public"/>
+            <ownedOperation xmi:id="_5UDdIFWMEd-z_KyQMFkSXg" name="main" visibility="public" isStatic="true">
+              <ownedParameter xmi:id="_5UDdIVWMEd-z_KyQMFkSXg" name="args" type="_5RfRUFWMEd-z_KyQMFkSXg"/>
+            </ownedOperation>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Enumeration" xmi:id="_5RPZsFWMEd-z_KyQMFkSXg" name="Phase">
+            <ownedLiteral xmi:id="_5UEEMFWMEd-z_KyQMFkSXg" name="INIT"/>
+            <ownedLiteral xmi:id="_5UEEMVWMEd-z_KyQMFkSXg" name="RAMPUP"/>
+            <ownedLiteral xmi:id="_5UEEMlWMEd-z_KyQMFkSXg" name="STABLE"/>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_8z62QFWMEd-z_KyQMFkSXg" name="Class1"/>
+</uml:Model>
