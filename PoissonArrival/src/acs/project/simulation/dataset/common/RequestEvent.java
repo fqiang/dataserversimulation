@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
-public class RequestArrivalEvent implements Serializable{
+public class RequestEvent implements Serializable{
 
 	@Order(value=1)
 	private Location location;
@@ -23,7 +23,7 @@ public class RequestArrivalEvent implements Serializable{
 	private static final long serialVersionUID = 6607490842817004146L;
 	
 	
-	public RequestArrivalEvent(Location location,Timezone timezone,long arrival_time,long content_size,int pop)
+	public RequestEvent(Location location,Timezone timezone,long arrival_time,long content_size,int pop)
 	{
 		this.location = location;
 		this.timezone = timezone;
@@ -32,7 +32,7 @@ public class RequestArrivalEvent implements Serializable{
 		this.time = arrival_time;
 	}
 	
-	private RequestArrivalEvent(String csvline)
+	private RequestEvent(String csvline)
 	{
 		StringTokenizer st = new StringTokenizer(csvline,",");
 		try {
@@ -44,13 +44,13 @@ public class RequestArrivalEvent implements Serializable{
 		}
 		catch (Exception e)
 		{
-			Logger.getLogger(RequestArrivalEvent.class).debug("File format missmatched! at current line:["+csvline+"]");
+			Logger.getLogger(RequestEvent.class).debug("File format missmatched! at current line:["+csvline+"]");
 		}
 	}
 	
-	public static RequestArrivalEvent fromString(String csvline)
+	public static RequestEvent fromString(String csvline)
 	{
-		RequestArrivalEvent event = new RequestArrivalEvent(csvline);
+		RequestEvent event = new RequestEvent(csvline);
 		return event;
 	}
 	
@@ -73,7 +73,7 @@ public class RequestArrivalEvent implements Serializable{
 	public static void main(String args[])
 	{
 		System.out.println("Testing request arrival event");
-		RequestArrivalEvent event = new RequestArrivalEvent(Location.ASIAN,Timezone.GMT_0,1000,100,10);
+		RequestEvent event = new RequestEvent(Location.ASIAN,Timezone.GMT_0,1000,100,10);
 		System.out.println(event.toString());
 	}
 	

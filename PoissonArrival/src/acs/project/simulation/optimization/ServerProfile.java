@@ -4,7 +4,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-import acs.project.simulation.dataset.common.Location;
 import acs.project.simulation.dataset.common.ServerConfigInfo;
 import acs.project.simulation.dataset.common.ServerStatus;
 
@@ -17,7 +16,6 @@ public class ServerProfile {
 	private Socket socket = null;  //the socket to the server
 	private ObjectOutputStream oos = null; //ouput to the server
 	private ObjectInputStream ois = null;   //input to the lb from server
-	
 	
 	//server status
 	ServerStatus status = null;

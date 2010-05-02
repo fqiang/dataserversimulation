@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.Random;
-
 import org.apache.log4j.Logger;
 
 import acs.project.simulation.dataset.common.Location;
-import acs.project.simulation.dataset.common.RequestArrivalEvent;
+import acs.project.simulation.dataset.common.RequestEvent;
 import acs.project.simulation.dataset.common.Timezone;
 import acs.project.simulation.dataset.strategy.Hour24PerHourStrategy;
 import acs.project.simulation.dataset.strategy.OneHourHalfHourStrategy;
@@ -60,7 +58,7 @@ public class RequestEventGenerator {
 				break;
 			}
 			//log.debug("arrival["+arrival_time+"] "+"size["+content_size+"] "+"rank["+content_rank+"] ");
-			RequestArrivalEvent event = new RequestArrivalEvent( location, timezone,
+			RequestEvent event = new RequestEvent( location, timezone,
 					arrival_time,content_size, content_rank);
 			file.println(event.toString());
 			

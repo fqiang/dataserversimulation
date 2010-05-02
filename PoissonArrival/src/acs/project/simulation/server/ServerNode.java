@@ -6,16 +6,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
 
 import org.apache.log4j.*;
 import acs.project.simulation.dataset.common.Location;
-import acs.project.simulation.dataset.common.RequestArrivalEvent;
+import acs.project.simulation.dataset.common.RequestEvent;
 import acs.project.simulation.dataset.common.ServerConfigInfo;
 import acs.project.simulation.dataset.common.ServerStatus;
 import acs.project.simulation.dataset.common.SimulationEnd;
@@ -129,10 +126,10 @@ public class ServerNode {
 				log.debug("Request Event Done! [SimulationEnd]- OutstandingRequest["+this.currRequests.size()+"]");
 				break;
 			}
-			else if(obj instanceof RequestArrivalEvent)
+			else if(obj instanceof RequestEvent)
 			{
 				assert currRequests.size()<this.maxConRequests;
-				RequestArrivalEvent event = (RequestArrivalEvent)obj;
+				RequestEvent event = (RequestEvent)obj;
 				assert currTime == event.getTime();
 				log.debug("[RequestArrivalEvent] - CurrTime["+currTime+"]    Event["+event.toString()+"]" );
 				incomingRequest(event);
@@ -175,7 +172,7 @@ public class ServerNode {
 		reportPrinter.println("Total Consumption:" + totalConsumption);
 	}
 
-	private void incomingRequest(RequestArrivalEvent event) {
+	private void incomingRequest(RequestEvent event) {
 		Request request = new Request(event,CONN_EST_TIME,RAMP_UP_TIME,SPEED_LIMIT,SPEED_INIT);
 		
 		//update status
