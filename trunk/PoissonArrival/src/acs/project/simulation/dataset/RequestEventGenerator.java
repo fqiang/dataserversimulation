@@ -76,8 +76,8 @@ public class RequestEventGenerator {
 	
 	public static void testGenerate_1hr(Location loc,Timezone zone, String filename) throws FileNotFoundException 
 	{
-		double[] lamdas = { 10d, 100d };
-		double[] lamdas1 = { 100d };
+		double[] lamdas = { 0.01d, 0.02d };
+		double[] lamdas1 = { 0.02d };
 		RequestEventGenerationStrategy onehr_halfhr_strategy = new OneHourHalfHourStrategy(
 				lamdas1);
 		RequestEventGenerator onehr_halfhr_gen = new RequestEventGenerator(
@@ -105,10 +105,10 @@ public class RequestEventGenerator {
 
 	public static void main(String[] args) throws FileNotFoundException 
 	{
-		RequestEventGenerator.testGenerate_1hr(Location.ASIAN,Timezone.GMT_0,"asian_gmt0_onehr_halfhr.trace");	
-		RequestEventGenerator.testGenerate_1hr(Location.JAPAN,Timezone.GMT_0,"japan_gmt0_onehr_halfhr.trace");
-		RequestEventGenerator.testGenerate_1hr(Location.CHINA,Timezone.GMT_0,"china_gmt0_onehr_halfhr.trace");
-		RequestEventGenerator.testGenerate_1hr(Location.EUROPE,Timezone.GMT_0,"europe_gmt0_onehr_halfhr.trace");
-		RequestEventGenerator.testGenerate_1hr(Location.AMERICAN,Timezone.GMT_0,"american_gmt0_onehr_halfhr.trace");
+		RequestEventGenerator.testGenerate_1hr(Location.ASIAN,Timezone.GMT_0,"./trace/asian_gmt0_onehr_halfhr.trace");	
+		RequestEventGenerator.testGenerate_1hr(Location.JAPAN,Timezone.GMT_0,"./trace/japan_gmt0_onehr_halfhr.trace");
+		RequestEventGenerator.testGenerate_1hr(Location.CHINA,Timezone.GMT_0,"./trace/china_gmt0_onehr_halfhr.trace");
+		RequestEventGenerator.testGenerate_1hr(Location.EUROPE,Timezone.GMT_0,"./trace/europe_gmt0_onehr_halfhr.trace");
+		RequestEventGenerator.testGenerate_1hr(Location.AMERICAN,Timezone.GMT_0,"./trace/american_gmt0_onehr_halfhr.trace");
 	}
 }
