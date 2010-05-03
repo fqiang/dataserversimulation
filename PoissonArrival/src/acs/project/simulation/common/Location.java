@@ -1,4 +1,4 @@
-package acs.project.simulation.dataset.common;
+package acs.project.simulation.common;
 
 public enum Location {
 	CHINA,
