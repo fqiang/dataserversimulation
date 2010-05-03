@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import acs.project.simulation.server.ServerState;
+
 public class ServerStatus implements Serializable{
 
 	/**
@@ -13,18 +15,24 @@ public class ServerStatus implements Serializable{
 	@Order(value=1)
 	private int currNumReqs = 0;
 	@Order(value=2)
-	private long requestHandled = 0;
+	private long requestRecv = 0;
 	@Order(value=3)
-	private long currTime = 0;
+	private long requestDiscard = 0;
 	@Order(value=4)
-	private long currBW  = 0;
+	private long requestHandled = 0;
 	@Order(value=5)
-	private double currPower = 0;
+	private long currTime = 0;
 	@Order(value=6)
-	private double currLoad = 0;
+	private long currBW  = 0;
 	@Order(value=7)
-	private double currTolConsumption = 0;
+	private double currPower = 0;
 	@Order(value=8)
+	private double currLoad = 0;
+	@Order(value=9)
+	private double currTolConsumption = 0;
+	@Order(value=10)
+	private ServerState state;
+	@Order(value=11)
 	private static final long serialVersionUID = -964803076899075800L;
 	
 	public ServerStatus()
@@ -101,6 +109,30 @@ public class ServerStatus implements Serializable{
 
 	public double getCurrTolConsumption() {
 		return currTolConsumption;
+	}
+
+	public void setRequestRecv(long requestRecv) {
+		this.requestRecv = requestRecv;
+	}
+
+	public long getRequestRecv() {
+		return requestRecv;
+	}
+
+	public void setRequestDiscard(long requestDiscard) {
+		this.requestDiscard = requestDiscard;
+	}
+
+	public long getRequestDiscard() {
+		return requestDiscard;
+	}
+
+	public void setState(ServerState state) {
+		this.state = state;
+	}
+
+	public ServerState getState() {
+		return state;
 	}
 
 

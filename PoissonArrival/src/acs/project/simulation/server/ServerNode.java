@@ -16,19 +16,22 @@ import acs.project.simulation.dataset.common.RequestEvent;
 import acs.project.simulation.dataset.common.ServerConfigInfo;
 import acs.project.simulation.dataset.common.ServerStatus;
 import acs.project.simulation.dataset.common.SimulationEnd;
+import acs.project.simulation.dataset.common.SleepRequest;
 import acs.project.simulation.dataset.common.StatusRequest;
 import acs.project.simulation.dataset.common.TimeStamp;
+import acs.project.simulation.dataset.common.WakeUpRequest;
 import acs.project.simulation.optimization.LoadBalancer;
 
 public class ServerNode {
 	
 	public final static Logger log = Logger.getLogger(ServerNode.class);
 	
-	//simulation property
-	private final int CONN_EST_TIME = 100; //in milli, can be future improved using matrix (location,location)
-	private final int RAMP_UP_TIME = 3000; //in millisecond, speed ramp up
+	//simulation constant property
+	private final long CONN_EST_TIME = 100; //in milli, can be future improved using matrix (location,location)
+	private final long RAMP_UP_TIME = 3000; //in millisecond, speed ramp up
 	private final long SPEED_LIMIT = 300; //bytes per millsecond  - per connection
 	private final long SPEED_INIT = 30;   //bytes per millsecond
+	private final double SLEEP_POWER_RATE = 0.05;
 	
 	//simulation connections
 	private Socket socket = null;    //the communication socket with LB
@@ -44,24 +47,32 @@ public class ServerNode {
 	private long maxBW; //in bytes per millisecond
 	private double maxPower;  //in J/millisecond
 	private double idlePowerRate;
+	private double sleepPowerRate;
 	
 	//report printer
 	private PrintStream reportPrinter;
 	
 	//system status
 	private Vector<Request> currRequests = null;
+	private long requestRecv;
+	private long requestDiscard;
 	private long requestHandled;
 	private long currTime = 0;          //simulation time
-	private long nextDepartureTime = 0; //next request(s) depature time
 	private long  currBW = 0;       //in byte       = sum of all req.getCurrSpeed()
-	private double currPower = 0;   //in watt per millisecond = (idelPowerRate + (1-idelPowerRate)*currLoad)*maxPower
+	private double currPower = 0;   //in Joule per millisecond = (idelPowerRate + (1-idelPowerRate)*currLoad)*maxPower
 	private double currLoad = 0;    // the req load = currRequest.size()/maxConRequest
 	private double totalConsumption = 0;  //in Joule
+	private ServerState state;
 
-
+	//global temporary variable
+	private long nextDepartureTime = 0; //next request(s) depature time
+	private RequestInitPropertyRetriever propRet = null;
 	
-	public ServerNode(String name,Location loc,int max_conc_requests,long max_bw,double max_power,double idle_power_rate,int lb_port,String lb_addr,PrintStream report)
+	public ServerNode(String name,Location loc,int max_conc_requests,long max_bw,double max_power,double idle_power_rate,int lb_port,String lb_addr,PrintStream report) throws IOException
 	{
+		//helper obj init
+		propRet = new RequestInitPropertyRetriever();
+		
 		//system config init
 		this.serverName = name;
 		this.location = loc;
@@ -69,13 +80,17 @@ public class ServerNode {
 		this.maxBW = max_bw;
 		this.maxPower = max_power;
 		this.idlePowerRate = idle_power_rate;
+		this.sleepPowerRate = SLEEP_POWER_RATE;
 		this.lbPort = lb_port;
 		this.lbAddr = lb_addr;
 		this.reportPrinter = report;
 		
 		//system status init
 		this.currRequests = new Vector<Request>();
+		this.requestRecv = 0;
+		this.requestDiscard = 0;
 		this.requestHandled = 0;
+		this.state = ServerState.RUNNING;
 		this.currTime = 0;
 		this.currBW = 0;
 		this.currPower = idlePowerRate*maxPower;
@@ -103,6 +118,7 @@ public class ServerNode {
 		info.setMaxBW(maxBW);
 		info.setMaxPower(maxPower);
 		info.setIdlePowerRate(idlePowerRate);
+		info.setSleepPowerRate(sleepPowerRate);
 		return info;
 	}
 	
@@ -114,32 +130,45 @@ public class ServerNode {
 		{
 			Object obj = this.ois.readObject();
 			if(obj instanceof StatusRequest)
-			{
-				//simulation time not proceeding
+			{//Query effect
 				log.debug("[StatusRequest]  - CurrTime["+currTime+"]");
 				StatusRequest req = (StatusRequest)obj;
 				ServerStatus status = createServerStatus();
 				this.oos.writeObject(status);
 			}
-			else if(obj instanceof SimulationEnd)
-			{
-				log.debug("Request Event Done! [SimulationEnd]- OutstandingRequest["+this.currRequests.size()+"]");
-				break;
+			else if(obj instanceof SleepRequest)
+			{//instantaneous effect
+				log.debug("[SleepRequest] ServerName["+serverName+"] CurrTime["+currTime+"]");
+				assert state!=ServerState.SLEEP && state == ServerState.RUNNING;
+				handleSleepRequest();
+			}
+			else if(obj instanceof WakeUpRequest)
+			{//instantaneous effect
+				log.debug("[WakeUpRequest] ServerName["+serverName+"] CurrTime["+currTime+"]");
+				assert state == ServerState.SLEEP&&state != ServerState.RUNNING;
+				handleWakeUpRequest();
 			}
 			else if(obj instanceof RequestEvent)
-			{
-				assert currRequests.size()<this.maxConRequests;
+			{//instantaneous effect
 				RequestEvent event = (RequestEvent)obj;
-				assert currTime == event.getTime();
 				log.debug("[RequestArrivalEvent] - CurrTime["+currTime+"]    Event["+event.toString()+"]" );
-				incomingRequest(event);
+				assert currTime == event.getTime();
+				assert state == ServerState.RUNNING;
+				handleIncomingEvent(event);
 			}
 			else if(obj instanceof TimeStamp)
-			{
+			{//time elapse effect
 				TimeStamp stamp = (TimeStamp)obj;
 				long synchTime = stamp.getCurrTime();
+				assert synchTime > currTime;
 				log.debug("[TimeStamp] - TimeStampe["+synchTime+"] CurrTime["+currTime+"] CurrLoad["+currLoad+"] reqHandled["+requestHandled+"] outstandReq["+currRequests.size()+"]");
-				advanceSimulationTo(synchTime);
+				handleTimeStamp(synchTime);
+			}
+			else if(obj instanceof SimulationEnd)
+			{
+				assert state == ServerState.RUNNING || state == ServerState.SLEEP;
+				log.debug("[SimulationEnd]- OutstandingRequest["+this.currRequests.size()+"]");
+				break;
 			}
 			log.debug("Server - currTime ["+currTime+"]");
 		}
@@ -148,35 +177,99 @@ public class ServerNode {
 		cleanup();
 	}
 
-	private ServerStatus createServerStatus() {
+	private void handleWakeUpRequest() 
+	{
+		assert state == ServerState.SLEEP;
+		//update state
+		assert currRequests.size() == 0;
+		assert nextDepartureTime == 0;
+		assert currBW == 0;
+		assert currPower == sleepPowerRate * maxPower;
+		assert currLoad == 0;
+		
+		currPower = idlePowerRate * maxPower;
+		state = ServerState.RUNNING;
+	}
+
+	private void handleTimeStamp(long synchTime) 
+	{
+		if(state == ServerState.RUNNING)
+		{
+			departRequestsUntil(synchTime);
+			advanceSimulationTo(synchTime);
+		}
+		else if(state == ServerState.SLEEP)
+		{
+			assert currRequests.size() == 0;
+			assert nextDepartureTime == 0;
+			assert currBW == 0;
+			assert currPower == sleepPowerRate * maxPower;
+			assert currLoad == 0;
+			
+			long elapse = synchTime - currTime;
+			
+			//update state
+			totalConsumption += currPower * elapse;
+			currTime = synchTime;
+		}
+	}
+
+	private void handleSleepRequest() 
+	{
+		assert state == ServerState.RUNNING;
+		//update state
+		requestDiscard += currRequests.size();
+		currRequests.clear();   //discard all the outstanding requests
+		nextDepartureTime = 0;
+		currBW = 0;
+		currPower = sleepPowerRate * maxPower;
+		currLoad = 0;
+		state = ServerState.SLEEP;
+	}
+
+	private ServerStatus createServerStatus() 
+	{
+		assert requestRecv == requestDiscard + requestHandled;
 		ServerStatus status = new ServerStatus();
 		status.setCurrNumReqs(currRequests.size());
+		status.setRequestRecv(requestRecv);
+		status.setRequestDiscard(requestDiscard);
 		status.setRequestHandled(requestHandled);
 		status.setCurrTime(currTime);
 		status.setCurrBW(currBW);
 		status.setCurrPower(currPower);
 		status.setCurrLoad(currLoad);
 		status.setCurrTolConsumption(totalConsumption);
+		status.setState(state);
 		return status;
 	}
 	
 	private void cleanup() throws IOException
 	{
+		//send last status
 		ServerStatus status = createServerStatus();
 		this.oos.writeObject(status);
+		
 		this.socket.close();
 		this.oos.close();
 		this.ois.close();
+		
 		reportPrinter.println("============================================");
 		reportPrinter.println("Simulation Finished - at "+currTime);
 		reportPrinter.println("Total Consumption:" + totalConsumption);
+		reportPrinter.println(status.toString());
+		reportPrinter.println("============================================");
 	}
 
-	private void incomingRequest(RequestEvent event) {
-		Request request = new Request(event,CONN_EST_TIME,RAMP_UP_TIME,SPEED_LIMIT,SPEED_INIT);
+	private void handleIncomingEvent(RequestEvent event) 
+	{
+		assert currRequests.size()<this.maxConRequests;
+		RequestInitProperty prop = propRet.getProperty(location, event.getLocation());
+		Request request = new Request(event,prop.getConnEstTime(),prop.getRampUpTime(),prop.getSpeedLimit(),prop.getSpeedInit());
 		
 		//update status
 		currRequests.add(request);
+		requestRecv++;
 		currLoad = (double)currRequests.size() / (double)maxConRequests;
 		currPower = (idlePowerRate + (1-idlePowerRate)*currLoad)*maxPower;
 		currBW = 0;
@@ -188,7 +281,30 @@ public class ServerNode {
 	
 	private void advanceSimulationTo(long synchTime) 
 	{
-		//step 1:  depart all the request before synch time
+		//assert no more departure before synchTime
+		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
+		assert state == ServerState.RUNNING;
+		long timeleft = synchTime - currTime;
+		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
+		for(Request req:currRequests)
+		{
+			this.updateRequest(timeleft, req, globalMaxSpeed);
+		}
+		//update status 
+		totalConsumption += currPower * timeleft;
+		currTime += timeleft;
+		currBW = 0;
+		for(Request req:currRequests)
+		{
+			currBW += req.getCurrSpeed();
+		}
+		assert currTime == synchTime;
+	}
+
+	private void departRequestsUntil(long synchTime) 
+	{
+		assert state == ServerState.RUNNING;
+		//depart all the request before synch time
 		while(true)
 		{
 			//calculate nextDepartureTime and mkae the hashset to be removed
@@ -201,7 +317,7 @@ public class ServerNode {
 				assert currPower == (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
 
 				long globalMax = this.deteCurrGlobalMaxSpeed();
-				//update each request in outstand request list
+				//update each request in outstanding request list
 				for(Request req:currRequests)
 				{
 					if(!toRemove.contains(req)){
@@ -223,29 +339,10 @@ public class ServerNode {
 				}
 			}
 			else{//no more to depart
+				assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
 				break;
 			}
 		}
-		assert nextDepartureTime==0||nextDepartureTime > synchTime;
-		
-		//step 2. proceeding more time left
-		long timeleft = synchTime - currTime;
-		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
-		for(Request req:currRequests)
-		{
-			this.updateRequest(timeleft, req, globalMaxSpeed);
-		}
-		//update status 
-		totalConsumption += currPower * timeleft;
-		currLoad = (double)currRequests.size()/(double)maxConRequests;
-		currPower = (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
-		currTime += timeleft;
-		currBW = 0;
-		for(Request req:currRequests)
-		{
-			currBW += req.getCurrSpeed();
-		}
-		assert currTime == synchTime;
 	}
 
 	private long deteCurrGlobalMaxSpeed()
@@ -460,9 +557,12 @@ public class ServerNode {
 		log.debug("handling outstanding requests");
 		while(true)
 		{
-			//calculate nextDepartureTime and mkae the hashset to be removed
+			if(currRequests.size()==0) break; //no outstanding requests
+			
+			//calculate nextDepartureTime and make the hashset to be removed
 			HashSet<Request> toRemove = this.getNextDepartureRequests();
 			long elapse = nextDepartureTime - currTime;
+			assert (elapse==0 && toRemove.size()==0) || (elapse!=0 && toRemove.size()!=0);
 			assert currLoad == (double)currRequests.size()/(double)maxConRequests;
 			assert currPower == (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
 
@@ -488,7 +588,6 @@ public class ServerNode {
 				currBW += req.getCurrSpeed();
 			}
 			
-			if(currRequests.size()==0) break; //all done!
 		}
 		log.debug("Done! Server Simulation finished..");
 	}

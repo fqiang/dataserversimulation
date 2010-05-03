@@ -23,6 +23,8 @@ public class ServerConfigInfo implements Serializable {
 	@Order(value=6)
 	private double idlePowerRate;
 	@Order(value=7)
+	private double sleepPowerRate;
+	@Order(value=8)
 	private static final long serialVersionUID = -7541603586424204701L;
 	
 	public ServerConfigInfo()
@@ -86,6 +88,14 @@ public class ServerConfigInfo implements Serializable {
 
 	public double getIdlePowerRate() {
 		return idlePowerRate;
+	}
+
+	public void setSleepPowerRate(double sleepPowerRate) {
+		this.sleepPowerRate = sleepPowerRate;
+	}
+
+	public double getSleepPowerRate() {
+		return sleepPowerRate;
 	}
 	
 	

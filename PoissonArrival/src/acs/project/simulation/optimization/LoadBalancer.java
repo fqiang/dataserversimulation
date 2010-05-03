@@ -19,34 +19,49 @@ import acs.project.simulation.dataset.common.ServerStatus;
 import acs.project.simulation.dataset.common.SimulationEnd;
 import acs.project.simulation.dataset.common.StatusRequest;
 import acs.project.simulation.dataset.common.TimeStamp;
+import acs.project.simulation.optimization.strategy.EnergyAwareStrategyInterface;
+import acs.project.simulation.optimization.strategy.SimpleStrategy;
 
 public class LoadBalancer {
 
 	public final static Logger log = Logger.getLogger(LoadBalancer.class);
 	
-	//simulation properties
+	//simulation strategy
+	private EnergyAwareStrategyInterface strategy = null;
+	
+	//simulation properties constant
 	public static final int DEFAULT_LB_PORT = 4000;
 	public static final String DEFAULT_LB_ADDR = "localhost";
 	public static final int DEAFAULT_TOTAL_SERVERS = 3;
 	
+	//simulation properties
 	private int numOfServers = 0;
 	private int port = 0;  //lb lisening port
 	private PrintStream reportPrinter;
 	private ServerSocket server_socket = null;
 	
 	//system status
-	private List<ArrayList<ServerProfile>> serverlist = Collections.synchronizedList(new ArrayList<ArrayList<ServerProfile>>());
-	private long totDiscardRequest = 0;
-	private long totRequest = 0;
-	private long totHandledRequest = 0;
+	private List<ArrayList<ServerProfile>> serverlist = null;
+	private long requestDiscarded = 0;
+	private long requestTotal = 0;
+	private long requestDispatched = 0;
 	
 	public LoadBalancer(int numServers, int aPort, PrintStream report) throws IOException
 	{
+		//init strategy
+		strategy = new SimpleStrategy();
+		
+		//init simulation properties
 		this.numOfServers = numServers;
 		this.port = aPort;
 		this.reportPrinter = report;
-		//this.addr = DEFAULT_LB_ADDR;
 		this.server_socket = new ServerSocket(port);
+		
+		//init system status
+		serverlist = Collections.synchronizedList(new ArrayList<ArrayList<ServerProfile>>());
+		requestDiscarded = 0;
+		requestTotal = 0;
+		requestDispatched = 0;
 		for (Location l : Location.values())
 		{
 			ArrayList<ServerProfile> servers = new ArrayList<ServerProfile>();
@@ -118,18 +133,18 @@ public class LoadBalancer {
 			//then dispatching the event
 			for (RequestEvent event:events)
 			{
-				totRequest++;
+				requestTotal++;
 				nowtime = event.getTime();
 				assert pretime==0||nowtime==pretime;
 				pretime = nowtime;
 				
-				ServerProfile profile = this.selectServer(event);
+				ServerProfile profile = strategy.selectServer(serverlist,event);
 				if(profile==null){
-					totDiscardRequest++;
+					requestDiscarded++;
 					log.debug("Discard Event at EventTimeTick["+nowtime+"]");
 				}
 				else{
-					totHandledRequest++;
+					requestDispatched++;
 					log.debug("Send to Server["+profile.getInfo().getServerName()+"]  Event["+event.toString()+"]");
 					profile.getOos().writeObject(event);
 				}
@@ -150,14 +165,18 @@ public class LoadBalancer {
 		{
 			for(ServerProfile server:servers)
 			{
+				//read last status
 				ServerStatus status = (ServerStatus)server.getOis().readObject();
 				server.setStatus(status);
-				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
-				reportPrinter.println("+Server Name: "+server.getInfo().getServerName());
-				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
+				
 				server.getSocket().close();
 				server.getOos().close();
 				server.getOis().close();
+
+				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
+				reportPrinter.println("+Server Name: "+server.getInfo().getServerName());
+				reportPrinter.println(server.status.toString());
+				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
 			}
 		}
 	}
@@ -170,33 +189,6 @@ public class LoadBalancer {
 				server.getOos().writeObject(obj);
 			}
 		}
-	}
-
-	public ServerProfile selectServer(RequestEvent event) throws IOException, ClassNotFoundException
-	{
-		/*
-		 * this is a very simple strategy finding a free server in the area(location)
-		 */
-		ServerProfile profile = null;
-		ArrayList<ServerProfile> servers = this.serverlist.get(event.getLocation().ordinal());
-		for(ServerProfile server:servers)
-		{
-			StatusRequest req = new StatusRequest();
-			server.getOos().writeObject(req);
-			ServerStatus status = (ServerStatus)server.getOis().readObject();
-			server.setStatus(status);
-			assert status.getCurrLoad() <= 1;
-			if(status.getCurrLoad()<1)
-			{
-				return server;
-			}
-			else
-			{
-				log.debug("Server Busy - ServerName["+server.getInfo().getServerName()+"]"+status.toString());
-			}
-		}
-		
-		return profile;
 	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException
