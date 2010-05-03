@@ -1,4 +1,4 @@
-package acs.project.simulation.random;
+package acs.project.simulation.dataset.random;
 
 import java.io.File;
 import java.io.FileNotFoundException;
