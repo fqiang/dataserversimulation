@@ -1,12 +1,9 @@
 package acs.project.simulation.server;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.apache.log4j.Logger;
 
 import acs.project.simulation.dataset.common.Location;
 
@@ -53,6 +50,7 @@ public class RequestInitPropertyRetriever
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
 		String csvline = reader.readLine();
 		String[] col = csvline.split(",");
+		assert col.length == Location.values().length + 1;
 		int i = 1;
 		csvline = reader.readLine();
 		while(i<col.length)
