@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import acs.project.simulation.dataset.common.Location;
+import acs.project.simulation.common.Location;
 
 public class RequestInitPropertyRetriever 
 {

@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
-import acs.project.simulation.dataset.common.RequestEvent;
+import acs.project.simulation.common.RequestEvent;
 import acs.project.simulation.optimization.LoadBalancer;
 
 public class MyLittleTest {

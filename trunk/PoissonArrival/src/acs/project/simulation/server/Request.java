@@ -1,6 +1,6 @@
 package acs.project.simulation.server;
 
-import acs.project.simulation.dataset.common.RequestEvent;
+import acs.project.simulation.common.RequestEvent;
 
 public class Request {
 

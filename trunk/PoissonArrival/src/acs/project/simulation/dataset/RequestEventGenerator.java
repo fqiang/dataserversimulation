@@ -6,9 +6,9 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import org.apache.log4j.Logger;
 
-import acs.project.simulation.dataset.common.Location;
-import acs.project.simulation.dataset.common.RequestEvent;
-import acs.project.simulation.dataset.common.Timezone;
+import acs.project.simulation.common.Location;
+import acs.project.simulation.common.RequestEvent;
+import acs.project.simulation.common.Timezone;
 import acs.project.simulation.dataset.strategy.Hour24PerHourStrategy;
 import acs.project.simulation.dataset.strategy.OneHourHalfHourStrategy;
 import acs.project.simulation.dataset.strategy.RequestEventGenerationStrategy;

@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import acs.project.simulation.dataset.common.RequestEvent;
+import acs.project.simulation.common.RequestEvent;
 import acs.project.simulation.optimization.TraceFileFilter;
 
 public class EventFeeder {

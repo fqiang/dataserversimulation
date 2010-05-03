@@ -4,8 +4,8 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-import acs.project.simulation.dataset.common.ServerConfigInfo;
-import acs.project.simulation.dataset.common.ServerStatus;
+import acs.project.simulation.common.ServerConfigInfo;
+import acs.project.simulation.common.ServerStatus;
 
 public class ServerProfile {
 	
