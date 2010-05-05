@@ -117,6 +117,7 @@ public class RequestEventGenerator {
 			{
 				Timezone t = Timezone.GMT_0;
 				String filename = "./trace/"+l.name().toLowerCase()+"_"+t.name().toLowerCase()+"_24hr_1hr.trace";
+				System.out.println("Generating Location["+l.name()+"]...");
 				RequestEventGenerator.testGenerate_24hr(l,t,filename);	
 			}
 		}
