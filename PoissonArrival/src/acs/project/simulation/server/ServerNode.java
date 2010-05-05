@@ -171,7 +171,7 @@ public class ServerNode {
 				log.debug("[SimulationEnd]- OutstandingRequest["+this.currRequests.size()+"]");
 				break;
 			}
-			log.debug("Server - currTime ["+currTime+"]");
+			//log.debug("Server - currTime ["+currTime+"]");
 		}
 		
 		handleOutStandingRequests();
@@ -230,7 +230,7 @@ public class ServerNode {
 
 	private ServerStatus createServerStatus() 
 	{
-		assert requestRecv == requestDiscard + requestHandled;
+		assert requestRecv == requestDiscard + requestHandled + currRequests.size();
 		ServerStatus status = new ServerStatus();
 		status.setCurrNumReqs(currRequests.size());
 		status.setRequestRecv(requestRecv);
@@ -330,9 +330,10 @@ public class ServerNode {
 				requestHandled += toRemove.size();
 				currRequests.removeAll(toRemove);
 				totalConsumption += currPower * elapse;
+				currTime += elapse;
+				//update load power bw
 				currLoad = (double)currRequests.size()/(double)maxConRequests;
 				currPower = (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
-				currTime += elapse;
 				currBW = 0;
 				for(Request req:currRequests)
 				{
@@ -447,6 +448,7 @@ public class ServerNode {
 				break;
 			}
 			
+			//calculating minimum
 			if(minDepartInterval==0){
 				minDepartInterval = currDepartInterval;
 				requests.add(req);
@@ -472,6 +474,8 @@ public class ServerNode {
 	{
 		long timeAlive = req.getTimeAlive();
 		long currMaxSpeed = Math.min(globalMaxSpeed, req.getMaxSpeed());
+		
+		log.debug("[UpdateRequest][BEFORE][elapse="+elapse +"]:"+req.toString());
 		
 		switch(req.getState())
 		{
@@ -502,6 +506,7 @@ public class ServerNode {
 					long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getInitSpeed(), currSpeed, rampuptime))/2d);
 					long sizeleft = req.getSizeLeft() - rampuptrans;
 					assert sizeleft > 0;
+					assert timeAlive + elapse < req.getConnEstTime() + req.getRamupTime();
 					req.setState(Phase.RAMPUP);
 					req.setSizeLeft(sizeleft);
 					req.setCurrSpeed(currSpeed);
@@ -549,7 +554,8 @@ public class ServerNode {
 			//still stable
 			break;
 		}
-		req.setTimeAlive(req.getTimeAlive()+elapse);
+		//req.setTimeAlive(req.getTimeAlive()+elapse);
+		log.debug("[UpdateRequest][AFTER][elapse="+elapse +"]:"+req.toString());
 		assert req.getSizeLeft() > 0;
 	}
 	

@@ -11,7 +11,7 @@
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="log4j.userclasspath">
-        <pathelement location="./lib/log4j-1.2.15.jar"/>
+        <pathelement location="../../../PoissonArrival/lib/log4j-1.2.15.jar"/>
     </path>
     <path id="PoissonArrival.classpath">
         <pathelement location="bin"/>
@@ -20,6 +20,10 @@
     <path id="run.LoadBalancer.classpath">
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
+    </path>
+    <path id="run.MyLittleTest.classpath">
+        <pathelement location="log4j"/>
+        <path refid="PoissonArrival.classpath"/>
     </path>
     <path id="run.ServerNode_American.classpath">
         <path refid="PoissonArrival.classpath"/>
@@ -41,7 +45,11 @@
         <path refid="PoissonArrival.classpath"/>
         <pathelement location="log4j"/>
     </path>
-    <path id="run.MyLittleTest.classpath">
+    <path id="run.RequestEventGenerator_1hr.classpath">
+        <pathelement location="log4j"/>
+        <path refid="PoissonArrival.classpath"/>
+    </path>
+    <path id="run.RequestEventGenerator_24hr.classpath">
         <pathelement location="log4j"/>
         <path refid="PoissonArrival.classpath"/>
     </path>
@@ -87,9 +95,9 @@
             <classpath refid="run.LoadBalancer.classpath"/>
         </java>
     </target>
-    <target name="RequestEventGenerator">
-        <java classname="acs.project.simulation.dataset.RequestEventGenerator" failonerror="true" fork="yes">
-            <classpath refid="PoissonArrival.classpath"/>
+    <target name="MyLittleTest">
+        <java classname="acs.project.simulation.server.MyLittleTest" failonerror="true" fork="yes">
+            <classpath refid="run.MyLittleTest.classpath"/>
         </java>
     </target>
     <target name="ServerNode_American">
@@ -122,9 +130,16 @@
             <classpath refid="run.ServerNode_Japan.classpath"/>
         </java>
     </target>
-    <target name="MyLittleTest">
-        <java classname="acs.project.simulation.server.MyLittleTest" failonerror="true" fork="yes">
-            <classpath refid="run.MyLittleTest.classpath"/>
+    <target name="RequestEventGenerator_1hr">
+        <java classname="acs.project.simulation.dataset.RequestEventGenerator" failonerror="true" fork="yes">
+            <arg line="1"/>
+            <classpath refid="run.RequestEventGenerator_1hr.classpath"/>
+        </java>
+    </target>
+    <target name="RequestEventGenerator_24hr">
+        <java classname="acs.project.simulation.dataset.RequestEventGenerator" failonerror="true" fork="yes">
+            <arg line="2"/>
+            <classpath refid="run.RequestEventGenerator_24hr.classpath"/>
         </java>
     </target>
 </project>

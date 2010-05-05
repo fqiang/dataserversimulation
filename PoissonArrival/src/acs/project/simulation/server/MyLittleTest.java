@@ -25,5 +25,6 @@ public class MyLittleTest {
 		int now = 1200;
 		rate = now/(double)size;
 		System.out.println(rate+"||"+(rate==1d)+"||"+(0d==-0d));
+		assert false;
 	}
 }
