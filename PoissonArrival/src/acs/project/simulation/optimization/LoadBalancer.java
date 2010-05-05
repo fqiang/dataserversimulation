@@ -199,7 +199,7 @@ public class LoadBalancer {
 		}
 		else
 		{
-			int numServers = 1;//Integer.parseInt(args[0]);
+			int numServers = Integer.parseInt(args[0]);
 			int port = args.length==1?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[1]);
 			
 			String filename = ".//report//LoadBalancer" +".report";
