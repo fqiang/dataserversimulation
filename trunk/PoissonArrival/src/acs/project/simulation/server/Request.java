@@ -1,5 +1,9 @@
 package acs.project.simulation.server;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
+import acs.project.simulation.common.OrderComparator;
 import acs.project.simulation.common.RequestEvent;
 
 public class Request {
@@ -33,6 +37,28 @@ public class Request {
 		rampUpTime = rampUp;
 		maxSpeed = maxspeed;
 		initSpeed = initspeed;
+	}
+	
+	public String toString(){
+		StringBuffer buf = new StringBuffer();
+		
+		Field fields[] = this.getClass().getDeclaredFields();
+		for(Field f:fields)
+		{
+			buf.append(f.getName()+"[");
+			try {
+				buf.append(f.get(this).toString());
+			}
+			catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			buf.append("]-");
+		}
+		
+		return buf.toString();
 	}
 	
 	public void setEvent(RequestEvent event) {

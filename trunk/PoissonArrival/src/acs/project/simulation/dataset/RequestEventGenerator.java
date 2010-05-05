@@ -12,8 +12,6 @@ import acs.project.simulation.common.Timezone;
 import acs.project.simulation.dataset.random.ExpRandom;
 import acs.project.simulation.dataset.random.LognorRandom;
 import acs.project.simulation.dataset.random.ZipfRandom;
-import acs.project.simulation.dataset.strategy.Hour24PerHourStrategy;
-import acs.project.simulation.dataset.strategy.OneHourHalfHourStrategy;
 import acs.project.simulation.dataset.strategy.RequestEventGenerationStrategy;
 
 public class RequestEventGenerator {
@@ -39,9 +37,9 @@ public class RequestEventGenerator {
 		this.strategy = strategy;
 	}
 
-	public void initGenerator(long seed, double lamda, double mean,
+	public void initRandomVariables(long seed, double mean,
 			double stdd, int size, double skew) {
-		this.exp_rand = new ExpRandom(seed, lamda);
+		this.exp_rand = new ExpRandom(seed, strategy.getNextLamda());
 		this.lognor_rand = new LognorRandom(seed << 4, mean, stdd);
 		this.zipf_rand = new ZipfRandom(seed << 8, size, skew);
 	}
@@ -78,39 +76,49 @@ public class RequestEventGenerator {
 	
 	public static void testGenerate_1hr(Location loc,Timezone zone, String filename) throws FileNotFoundException 
 	{
-		double[] lamdas = { 0.01d, 0.02d };
-		double[] lamdas1 = { 0.02d };
-		RequestEventGenerationStrategy onehr_halfhr_strategy = new OneHourHalfHourStrategy(
-				lamdas1);
-		RequestEventGenerator onehr_halfhr_gen = new RequestEventGenerator(
-				loc,zone,filename,
-				onehr_halfhr_strategy);
-		onehr_halfhr_gen.initGenerator(1000, lamdas[0], 1, 1.5, 300, 1);
+		//double[] lamdas = { 0.01d, 0.02d };
+		RequestEventGenerationStrategy onehr_halfhr_strategy = new RequestEventGenerationStrategy();
+		RequestEventGenerator onehr_halfhr_gen = new RequestEventGenerator(loc,zone,filename,onehr_halfhr_strategy);
+		onehr_halfhr_gen.initRandomVariables(1000, 1, 1.5, 300, 1);
 		onehr_halfhr_gen.start();
 	}
 	
-	public static void testGenerate_24hr() throws FileNotFoundException
+	public static void testGenerate_24hr(Location loc,Timezone zone, String filename) throws FileNotFoundException
 	{
-		/*following code generate the requests from Location:ASIAN, Timezone:GMT_8
-		  for 24 hrs and lamda changes for each 1 hr.
-		 */
 		double[] lamdas = { 0.01d, 0.02d,0.03d,0.04d,0.05d,0.06d,0.07d,10d,15d,20d,25d,100d,100d,100d,100d,100d,100d,100d,100d,150d,200d,300d,10d,5d};
-		double[] lamdas1 = { 0.02d,0.03d,0.04d,0.05d,0.06d,0.07d,10d,15d,20d,25d,100d,100d,100d,100d,100d,100d,100d,100d,150d,200d,300d,10d,5d};
-		RequestEventGenerationStrategy onehr_halfhr_strategy = new Hour24PerHourStrategy(
-				lamdas1);
-		RequestEventGenerator onehr_halfhr_gen = new RequestEventGenerator(
-				Location.ASIAN, Timezone.GMT_8, "asian_gmt8_24hr_hr.csv",
-				onehr_halfhr_strategy);
-		onehr_halfhr_gen.initGenerator(1000, lamdas[0], 10, 1.5, 300, 1);
-		onehr_halfhr_gen.start();
+		RequestEventGenerationStrategy strategy = new RequestEventGenerationStrategy(lamdas,3600*1000*24,3600*1000);
+		RequestEventGenerator generator = new RequestEventGenerator(loc,zone,filename,strategy);
+		generator.initRandomVariables(1000, 10, 1.5, 300, 1);
+		generator.start();
 	}
 
 	public static void main(String[] args) throws FileNotFoundException 
 	{
-		RequestEventGenerator.testGenerate_1hr(Location.ASIAN,Timezone.GMT_0,"./trace/asian_gmt0_onehr_halfhr.trace");	
-		RequestEventGenerator.testGenerate_1hr(Location.JAPAN,Timezone.GMT_0,"./trace/japan_gmt0_onehr_halfhr.trace");
-		RequestEventGenerator.testGenerate_1hr(Location.CHINA,Timezone.GMT_0,"./trace/china_gmt0_onehr_halfhr.trace");
-		RequestEventGenerator.testGenerate_1hr(Location.EUROPE,Timezone.GMT_0,"./trace/europe_gmt0_onehr_halfhr.trace");
-		RequestEventGenerator.testGenerate_1hr(Location.AMERICAN,Timezone.GMT_0,"./trace/american_gmt0_onehr_halfhr.trace");
+		if(args.length==0)
+		{
+			System.out.println("./java RequestEventGenerator [1|2]");
+			System.out.println("   1  - generating 1 hour test trace");
+			System.out.println("   2  - generating 24 hour test trace");
+		}
+		if(args[0].equals("1"))
+		{
+			System.out.println("Generating 1 hour test trace...");
+			for(Location l:Location.values())
+			{
+				Timezone t = Timezone.GMT_0;
+				String filename = "./trace/"+l.name().toLowerCase()+"_"+t.name().toLowerCase()+"_onehr_halfhr.trace";
+				RequestEventGenerator.testGenerate_1hr(l,t,filename);	
+			}
+		}
+		else if(args[0].equals("2"))
+		{
+			System.out.println("Generating 24 hour test trace...");
+			for(Location l:Location.values())
+			{
+				Timezone t = Timezone.GMT_0;
+				String filename = "./trace/"+l.name().toLowerCase()+"_"+t.name().toLowerCase()+"_24hr_1hr.trace";
+				RequestEventGenerator.testGenerate_24hr(l,t,filename);	
+			}
+		}
 	}
 }
