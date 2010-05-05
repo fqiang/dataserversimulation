@@ -51,7 +51,7 @@ public class RequestEventGenerator {
 		// file.println("");
 		while (true) {
 			long arrival_time = (long) (currtime + exp_rand.nextExpDouble()*1000);
-			long content_size = (long) (lognor_rand.nextLognorDouble() * 1000000);
+			long content_size = (long) (lognor_rand.nextLognorDouble());
 			int content_rank = zipf_rand.nextZipf();
 			//exist condition
 			if (this.strategy.isGenerationEnd(arrival_time)) {
@@ -79,7 +79,7 @@ public class RequestEventGenerator {
 		//double[] lamdas = { 0.01d, 0.02d };
 		RequestEventGenerationStrategy onehr_halfhr_strategy = new RequestEventGenerationStrategy();
 		RequestEventGenerator onehr_halfhr_gen = new RequestEventGenerator(loc,zone,filename,onehr_halfhr_strategy);
-		onehr_halfhr_gen.initRandomVariables(1000, 1, 1.5, 300, 1);
+		onehr_halfhr_gen.initRandomVariables(1000, 3000, 1.5, 300, 1);
 		onehr_halfhr_gen.start();
 	}
 	
@@ -88,7 +88,7 @@ public class RequestEventGenerator {
 		double[] lamdas = { 0.01d, 0.02d,0.03d,0.04d,0.05d,0.06d,0.07d,10d,15d,20d,25d,100d,100d,100d,100d,100d,100d,100d,100d,150d,200d,300d,10d,5d};
 		RequestEventGenerationStrategy strategy = new RequestEventGenerationStrategy(lamdas,3600*1000*24,3600*1000);
 		RequestEventGenerator generator = new RequestEventGenerator(loc,zone,filename,strategy);
-		generator.initRandomVariables(1000, 10, 1.5, 300, 1);
+		generator.initRandomVariables(1000, 3000, 1.5, 300, 1);
 		generator.start();
 	}
 
