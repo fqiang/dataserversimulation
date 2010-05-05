@@ -161,8 +161,8 @@ public class ServerNode {
 			{//time elapse effect
 				TimeStamp stamp = (TimeStamp)obj;
 				long synchTime = stamp.getCurrTime();
-				assert synchTime > currTime;
-				log.debug("[TimeStamp] - TimeStampe["+synchTime+"] CurrTime["+currTime+"] CurrLoad["+currLoad+"] reqHandled["+requestHandled+"] outstandReq["+currRequests.size()+"]");
+				assert synchTime > currTime : "synchTime="+synchTime + "currTime="+currTime;
+				log.debug("[TimeStamp] - TimeStamp["+synchTime+"] CurrTime["+currTime+"] CurrLoad["+currLoad+"] reqHandled["+requestHandled+"] outstandReq["+currRequests.size()+"]");
 				handleTimeStamp(synchTime);
 			}
 			else if(obj instanceof SimulationEnd)

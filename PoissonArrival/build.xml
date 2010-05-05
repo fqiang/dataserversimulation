@@ -6,12 +6,11 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="PoissonArrival">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../eclipse_J2ee/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="log4j.userclasspath">
-        <pathelement location="../../../PoissonArrival/lib/log4j-1.2.15.jar"/>
+        <pathelement location="./lib/log4j-1.2.15.jar"/>
     </path>
     <path id="PoissonArrival.classpath">
         <pathelement location="bin"/>
@@ -76,19 +75,6 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-        <copy todir="${ant.library.dir}">
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </copy>
-        <unzip dest="${ant.library.dir}">
-            <patternset includes="jdtCompilerAdapter.jar"/>
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </unzip>
-    </target>
-    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-        <antcall target="build"/>
-    </target>
     <target name="LoadBalancer">
         <java classname="acs.project.simulation.optimization.LoadBalancer" failonerror="true" fork="yes">
             <arg line="5 4000"/>
