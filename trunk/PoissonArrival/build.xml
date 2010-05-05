@@ -78,6 +78,7 @@
     <target name="LoadBalancer">
         <java classname="acs.project.simulation.optimization.LoadBalancer" failonerror="true" fork="yes">
             <arg line="5 4000"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.LoadBalancer.classpath"/>
         </java>
     </target>
@@ -89,42 +90,49 @@
     <target name="ServerNode_American">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
             <arg line="AMERICAN1 AMERICAN 500 100000 0.5 0.7 localhost:4000"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.ServerNode_American.classpath"/>
         </java>
     </target>
     <target name="ServerNode_Asian">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
             <arg line="ASIAN1 ASIAN 500 100000 0.5 0.7 localhost:4000"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.ServerNode_Asian.classpath"/>
         </java>
     </target>
     <target name="ServerNode_China">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
             <arg line="CHINA1 CHINA 500 100000 0.5 0.7 localhost:4000"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.ServerNode_China.classpath"/>
         </java>
     </target>
     <target name="ServerNode_Europe">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
             <arg line="EUROPE1 EUROPE 500 100000 0.5 0.7 localhost:4000"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.ServerNode_Europe.classpath"/>
         </java>
     </target>
     <target name="ServerNode_Japan">
         <java classname="acs.project.simulation.server.ServerNode" failonerror="true" fork="yes">
             <arg line="JAPAN1 JAPAN 500 100000 0.5 0.7 localhost:4000"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.ServerNode_Japan.classpath"/>
         </java>
     </target>
     <target name="RequestEventGenerator_1hr">
         <java classname="acs.project.simulation.dataset.RequestEventGenerator" failonerror="true" fork="yes">
             <arg line="1"/>
-            <classpath refid="run.RequestEventGenerator_1hr.classpath"/>
+            <assertions><enable/></assertions>
+        	<classpath refid="run.RequestEventGenerator_1hr.classpath"/>
         </java>
     </target>
     <target name="RequestEventGenerator_24hr">
         <java classname="acs.project.simulation.dataset.RequestEventGenerator" failonerror="true" fork="yes">
             <arg line="2"/>
+        	<assertions><enable/></assertions>
             <classpath refid="run.RequestEventGenerator_24hr.classpath"/>
         </java>
     </target>
