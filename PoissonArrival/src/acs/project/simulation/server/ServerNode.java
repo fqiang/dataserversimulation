@@ -341,6 +341,7 @@ public class ServerNode {
 				}
 			}
 			else{//no more to depart
+				log.debug("no more departure at currTime["+currTime+"]");
 				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
 					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
 				break;
@@ -538,7 +539,7 @@ public class ServerNode {
 			else
 			{//still rampup
 				double rate = (double)(currMaxSpeed - req.getCurrSpeed())/(double)(rampupleft);
-				long currSpeed = req.getInitSpeed()+(long)((double)rampupleft*rate);
+				long currSpeed = req.getCurrSpeed()+(long)((double)elapse*rate);
 				assert currSpeed < currMaxSpeed;
 				long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getCurrSpeed(), currSpeed, elapse))/2d);
 				long sizeleft = req.getSizeLeft() - rampuptrans;
