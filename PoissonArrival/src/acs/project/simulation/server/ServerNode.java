@@ -396,6 +396,8 @@ public class ServerNode {
 		long maxGlobalSpeed = this.deteCurrGlobalMaxSpeed();
 		for(Request req:currRequests)
 		{
+			log.debug("[getNextDepartureRequests] -Request:["+req.toString()+"]");
+			
 			long maxReqSpeed = maxGlobalSpeed<req.getMaxSpeed()?maxGlobalSpeed:req.getMaxSpeed();  //whichever is less
 			long reqAlive = req.getTimeAlive();
 			long currDepartInterval = 0;
@@ -448,7 +450,7 @@ public class ServerNode {
 				currDepartInterval = ph3_time;
 				break;
 			}
-			
+			log.debug("currDepartInverval["+currDepartInterval+"]");
 			//calculating minimum
 			if(minDepartInterval==0){
 				minDepartInterval = currDepartInterval;
@@ -466,7 +468,7 @@ public class ServerNode {
 			}
 		}
 		nextDepartureTime = currTime + minDepartInterval;
-		
+		log.debug("nextDepartureTime["+nextDepartureTime+"] currTime["+currTime+"] minDepartInterval["+minDepartInterval+"]");
 		return requests;
 	}
 
@@ -540,7 +542,7 @@ public class ServerNode {
 				assert currSpeed < currMaxSpeed;
 				long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getCurrSpeed(), currSpeed, elapse))/2d);
 				long sizeleft = req.getSizeLeft() - rampuptrans;
-				assert sizeleft > 0;
+				assert sizeleft > 0: "sizeleft["+sizeleft+"]";
 				req.setSizeLeft(sizeleft);
 				req.setCurrSpeed(currSpeed);
 				req.setTimeAlive(timeAlive + elapse);
