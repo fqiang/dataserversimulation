@@ -341,7 +341,10 @@ public class ServerNode {
 				}
 			}
 			else{//no more to depart
-				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
+				//when nextDepartureTime = synchTime, the departure event will handled in next timestamp.
+				// because, new event coming will change currLoad and the time when the events departs 
+				// need to use the new currload to calculate the power consumption.
+				assert nextDepartureTime==currTime||nextDepartureTime >= synchTime : 
 					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
 				break;
 			}
