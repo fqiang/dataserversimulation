@@ -283,7 +283,7 @@ public class ServerNode {
 	private void advanceSimulationTo(long synchTime) 
 	{
 		//assert no more departure before synchTime
-		assert nextDepartureTime==currTime||nextDepartureTime >= synchTime;
+		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
 		assert state == ServerState.RUNNING;
 		long timeleft = synchTime - currTime;
 		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
@@ -310,7 +310,7 @@ public class ServerNode {
 		{
 			//calculate nextDepartureTime and mkae the hashset to be removed
 			HashSet<Request> toRemove = this.getNextDepartureRequests();
-			if(toRemove.size()!=0&&nextDepartureTime<synchTime)
+			if(toRemove.size()!=0&&nextDepartureTime<=synchTime)
 			{//depart the requests.
 				long elapse = nextDepartureTime - currTime;
 				assert elapse > 0;
@@ -341,10 +341,7 @@ public class ServerNode {
 				}
 			}
 			else{//no more to depart
-				//when nextDepartureTime = synchTime, the departure event will handled in next timestamp.
-				// because, new event coming will change currLoad and the time when the events departs 
-				// need to use the new currload to calculate the power consumption.
-				assert nextDepartureTime==currTime||nextDepartureTime >= synchTime : 
+				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
 					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
 				break;
 			}
