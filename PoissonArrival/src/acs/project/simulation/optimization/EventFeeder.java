@@ -32,14 +32,12 @@ public class EventFeeder {
 	public RequestEvent[] nextEvents() throws IOException
 	{
 		ArrayList<BufferedReader> readers = new ArrayList<BufferedReader>();
-		RequestEvent[] events = null;
+		ArrayList<RequestEvent> events = null;
 		
 		long min = 0;
-		//int min_index = 0;
 		for(int i=0;i<traceReaders.size();i++)
 		{
 			BufferedReader reader = traceReaders.get(i);
-			//long time = traceTimes.get(i).longValue();
 			reader.mark(5000);
 			String csvline = reader.readLine();
 			if(csvline != null)
@@ -74,13 +72,41 @@ public class EventFeeder {
 		}
 		else
 		{
-			events = new RequestEvent[readers.size()];
-			
-			for(int i=0;i<events.length;i++)
+			events = new ArrayList<RequestEvent>();
+			for(BufferedReader r:readers)
 			{
-				events[i] = RequestEvent.fromString(readers.get(i).readLine());
+				do{
+					r.mark(5000);
+					String csvline = r.readLine();
+					if(csvline==null) {
+						break;
+					}
+					RequestEvent e = RequestEvent.fromString(csvline);
+					if(e.getTime() == min){
+						events.add(e);
+					}
+					else{
+						assert e.getTime() > min : "e.currTime["+e.getTime()+"] min["+min+"]";
+						r.reset();
+						break;
+					}
+				} while(true);
 			}
-			return events;
+			return events.toArray(new RequestEvent[]{});
+		}
+	}
+	
+	public static void main(String[] args) throws IOException
+	{
+		EventFeeder ef = new EventFeeder();
+		int i = 0; 
+		while(true){
+			int j=0;
+			RequestEvent es[] = ef.nextEvents();
+			for(RequestEvent e:es)
+			{
+				System.out.println("["+i+++"]["+j+++"]"+e.toString());
+			}
 		}
 	}
 }
