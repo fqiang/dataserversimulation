@@ -283,7 +283,7 @@ public class ServerNode {
 	private void advanceSimulationTo(long synchTime) 
 	{
 		//assert no more departure before synchTime
-		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
+		assert nextDepartureTime==currTime||nextDepartureTime >= synchTime;
 		assert state == ServerState.RUNNING;
 		long timeleft = synchTime - currTime;
 		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
