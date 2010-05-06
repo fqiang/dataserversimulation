@@ -10,25 +10,25 @@ import java.util.Random;
 public class LognorRandom {
 	
 	private Random rand;
-	private double mean;
-	private double stdd;
+	private double mu;
+	private double teta;
 	
 	public LognorRandom(long seed,double mean,double stdd)
 	{
 		this.rand = new Random(seed);
-		this.mean = mean;
-		this.stdd = stdd;
+		this.mu = mean;
+		this.teta = stdd;
 	}
 	
 	public double getPDF(double x)
 	{
 		return
-		Math.exp(-(Math.pow(Math.log(x)-this.mean, 2)/(2*this.stdd*this.stdd)))/(x*Math.sqrt(2*Math.PI*this.stdd*this.stdd));
+		Math.exp(-(Math.pow(Math.log(x)-this.mu, 2)/(2*this.teta*this.teta)))/(x*Math.sqrt(2*Math.PI*this.teta*this.teta));
 	}
 	
 	public double nextLognorDouble()
 	{
-		return Math.exp(this.mean+this.stdd*rand.nextGaussian());
+		return Math.exp(this.mu+this.teta*rand.nextGaussian());
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException

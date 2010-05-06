@@ -341,7 +341,8 @@ public class ServerNode {
 				}
 			}
 			else{//no more to depart
-				assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
+				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
+					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
 				break;
 			}
 		}
