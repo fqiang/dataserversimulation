@@ -15,16 +15,8 @@ public class ServerConfigInfo implements Serializable {
 	@Order(value=2)
 	private Location location;
 	@Order(value=3)
-	private int maxConcurrentRequest;
-	@Order(value=4)
-	private long maxBW;
-	@Order(value=5)
 	private double maxPower;
-	@Order(value=6)
-	private double idlePowerRate;
-	@Order(value=7)
-	private double sleepPowerRate;
-	@Order(value=8)
+	@Order(value=4)
 	private static final long serialVersionUID = -7541603586424204701L;
 	
 	public ServerConfigInfo()
@@ -53,19 +45,7 @@ public class ServerConfigInfo implements Serializable {
 	public Location getLocation() {
 		return location;
 	}
-	public void setMaxBW(long max_bindwidth) {
-		this.maxBW = max_bindwidth;
-	}
-	public long getMaxBW() {
-		return maxBW;
-	}
-	public void setMaxConcurrentRequest(int maxConRequest) {
-		this.maxConcurrentRequest = maxConRequest;
-	}
-	public int getMaxConcurrentRequest() {
-		return maxConcurrentRequest;
-	}
-
+	
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
@@ -81,22 +61,5 @@ public class ServerConfigInfo implements Serializable {
 	public double getMaxPower() {
 		return maxPower;
 	}
-
-	public void setIdlePowerRate(double idlePowerRate) {
-		this.idlePowerRate = idlePowerRate;
-	}
-
-	public double getIdlePowerRate() {
-		return idlePowerRate;
-	}
-
-	public void setSleepPowerRate(double sleepPowerRate) {
-		this.sleepPowerRate = sleepPowerRate;
-	}
-
-	public double getSleepPowerRate() {
-		return sleepPowerRate;
-	}
-	
 	
 }

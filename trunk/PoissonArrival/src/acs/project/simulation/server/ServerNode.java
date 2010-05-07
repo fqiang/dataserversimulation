@@ -44,12 +44,8 @@ public class ServerNode {
 	//system property
 	private String serverName;
 	private Location location;	
-	private int maxConRequests;
-	private long maxBW; //in bytes per millisecond
 	private double maxPower;  //in J/millisecond
-	private double idlePowerRate;
-	private double sleepPowerRate;
-	
+		
 	//report printer
 	private PrintStream reportPrinter;
 	
@@ -63,25 +59,26 @@ public class ServerNode {
 	private double currPower = 0;   //in Joule per millisecond = (idelPowerRate + (1-idelPowerRate)*currLoad)*maxPower
 	private double currLoad = 0;    // the req load = currRequest.size()/maxConRequest
 	private double totalConsumption = 0;  //in Joule
-	private ServerState state;
+	private State state = null;
 
 	//global temporary variable
 	private long nextDepartureTime = 0; //next request(s) depature time
-	private RequestInitPropertyRetriever propRet = null;
 	
-	public ServerNode(String name,Location loc,int max_conc_requests,long max_bw,double max_power,double idle_power_rate,int lb_port,String lb_addr,PrintStream report) throws IOException
+	//helper obj
+	private RequestInitPropertyRetriever propRet = null;
+	private ServerStateRetiever stateRet = null;
+	
+	public ServerNode(String name,Location loc,double max_power,int lb_port,String lb_addr,PrintStream report) throws IOException
 	{
 		//helper obj init
 		propRet = new RequestInitPropertyRetriever();
+		stateRet = new ServerStateRetiever();
+		
 		
 		//system config init
 		this.serverName = name;
 		this.location = loc;
-		this.maxConRequests = max_conc_requests;
-		this.maxBW = max_bw;
 		this.maxPower = max_power;
-		this.idlePowerRate = idle_power_rate;
-		this.sleepPowerRate = SLEEP_POWER_RATE;
 		this.lbPort = lb_port;
 		this.lbAddr = lb_addr;
 		this.reportPrinter = report;
@@ -91,12 +88,16 @@ public class ServerNode {
 		this.requestRecv = 0;
 		this.requestDiscard = 0;
 		this.requestHandled = 0;
-		this.state = ServerState.RUNNING;
+		this.state = stateRet.getState("RUNNING");
 		this.currTime = 0;
 		this.currBW = 0;
-		this.currPower = idlePowerRate*maxPower;
 		this.currLoad = 0;
+		this.currPower = calcPower(maxPower,currLoad,state);
 		this.totalConsumption = 0;
+	}
+
+	private static double calcPower(double maxP,double load,State state) {
+		return (maxP*state.getPowerRate())*(state.getIdlePowerRate()+(1-state.getIdlePowerRate())*load);
 	}
 	
 	public void register() throws Exception
@@ -115,11 +116,7 @@ public class ServerNode {
 		ServerConfigInfo info = new ServerConfigInfo();
 		info.setServerName(serverName);
 		info.setLocation(location);
-		info.setMaxConcurrentRequest(maxConRequests);
-		info.setMaxBW(maxBW);
 		info.setMaxPower(maxPower);
-		info.setIdlePowerRate(idlePowerRate);
-		info.setSleepPowerRate(sleepPowerRate);
 		return info;
 	}
 	
@@ -140,13 +137,13 @@ public class ServerNode {
 			else if(obj instanceof SleepRequest)
 			{//instantaneous effect
 				log.debug("[SleepRequest] ServerName["+serverName+"] CurrTime["+currTime+"]");
-				assert state!=ServerState.SLEEP && state == ServerState.RUNNING;
+				assert !state.getName().equals("SLEEP") : "At state:["+state.toString()+"]";
 				handleSleepRequest();
 			}
 			else if(obj instanceof WakeUpRequest)
 			{//instantaneous effect
 				log.debug("[WakeUpRequest] ServerName["+serverName+"] CurrTime["+currTime+"]");
-				assert state == ServerState.SLEEP&&state != ServerState.RUNNING;
+				assert state.getName().equals("SLEEP"):"At state:["+state.toString()+"]";
 				handleWakeUpRequest();
 			}
 			else if(obj instanceof RequestEvent)
@@ -154,7 +151,7 @@ public class ServerNode {
 				RequestEvent event = (RequestEvent)obj;
 				log.debug("[RequestArrivalEvent] - CurrTime["+currTime+"]    Event["+event.toString()+"]" );
 				assert currTime == event.getTime();
-				assert state == ServerState.RUNNING;
+				assert !state.getName().equals("SLEEP");
 				handleIncomingEvent(event);
 			}
 			else if(obj instanceof TimeStamp)
@@ -167,11 +164,10 @@ public class ServerNode {
 			}
 			else if(obj instanceof SimulationEnd)
 			{
-				assert state == ServerState.RUNNING || state == ServerState.SLEEP;
+				log.debug("[SimulationEnd]- At State:["+state.toString()+"]");
 				log.debug("[SimulationEnd]- OutstandingRequest["+this.currRequests.size()+"]");
 				break;
 			}
-			//log.debug("Server - currTime ["+currTime+"]");
 		}
 		
 		handleOutStandingRequests();
@@ -180,32 +176,44 @@ public class ServerNode {
 
 	private void handleWakeUpRequest() 
 	{
-		assert state == ServerState.SLEEP;
-		//update state
+		assert state.getName().equals("SLEEP"):"At state:["+state.toString()+"]";
 		assert currRequests.size() == 0;
 		assert nextDepartureTime == 0;
 		assert currBW == 0;
-		assert currPower == sleepPowerRate * maxPower;
 		assert currLoad == 0;
+		assert currPower == calcPower(maxPower, currLoad, state);
 		
-		currPower = idlePowerRate * maxPower;
-		state = ServerState.RUNNING;
+		//update state
+		state = stateRet.getState("RUNNING");
+		currPower = calcPower(maxPower,currLoad,state);
+	}
+	private void handleSleepRequest() 
+	{
+		assert state.getName().equals("RUNNING");
+		//update state
+		requestDiscard += currRequests.size();
+		currRequests.clear();   //discard all the outstanding requests
+		nextDepartureTime = 0;
+		currBW = 0;
+		currLoad = 0;
+		state = stateRet.getState("SLEEP");
+		currPower = calcPower(maxPower,currLoad,state);
 	}
 
 	private void handleTimeStamp(long synchTime) 
 	{
-		if(state == ServerState.RUNNING)
+		if(state.getName().equals("RUNNING"))
 		{
 			departRequestsUntil(synchTime);
 			advanceSimulationTo(synchTime);
 		}
-		else if(state == ServerState.SLEEP)
+		else if(state.getName().equals("SLEEP"))
 		{
 			assert currRequests.size() == 0;
 			assert nextDepartureTime == 0;
 			assert currBW == 0;
-			assert currPower == sleepPowerRate * maxPower;
 			assert currLoad == 0;
+			assert currPower == calcPower(maxPower,currLoad,state);
 			
 			long elapse = synchTime - currTime;
 			
@@ -215,18 +223,6 @@ public class ServerNode {
 		}
 	}
 
-	private void handleSleepRequest() 
-	{
-		assert state == ServerState.RUNNING;
-		//update state
-		requestDiscard += currRequests.size();
-		currRequests.clear();   //discard all the outstanding requests
-		nextDepartureTime = 0;
-		currBW = 0;
-		currPower = sleepPowerRate * maxPower;
-		currLoad = 0;
-		state = ServerState.SLEEP;
-	}
 
 	private ServerStatus createServerStatus() 
 	{
@@ -264,15 +260,15 @@ public class ServerNode {
 
 	private void handleIncomingEvent(RequestEvent event) 
 	{
-		assert currRequests.size()<this.maxConRequests;
+		assert currRequests.size()<state.getMaxConRequests();
 		RequestInitProperty prop = propRet.getProperty(location, event.getLocation());
 		Request request = new Request(event,prop.getConnEstTime(),prop.getRampUpTime(),prop.getSpeedLimit(),prop.getSpeedInit());
 		
 		//update status
 		currRequests.add(request);
 		requestRecv++;
-		currLoad = (double)currRequests.size() / (double)maxConRequests;
-		currPower = (idlePowerRate + (1-idlePowerRate)*currLoad)*maxPower;
+		currLoad = (double)currRequests.size() / (double)state.getMaxConRequests();
+		currPower = calcPower(maxPower,currLoad,state);
 		currBW = 0;
 		for(Request req:currRequests)
 		{
@@ -284,7 +280,7 @@ public class ServerNode {
 	{
 		//assert no more departure before synchTime
 		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
-		assert state == ServerState.RUNNING;
+		assert state.getName().equals("RUNNING");
 		long timeleft = synchTime - currTime;
 		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
 		for(Request req:currRequests)
@@ -304,7 +300,7 @@ public class ServerNode {
 
 	private void departRequestsUntil(long synchTime) 
 	{
-		assert state == ServerState.RUNNING;
+		assert state.getName().equals("RUNNING");
 		//depart all the request before synch time
 		while(true)
 		{
@@ -314,8 +310,8 @@ public class ServerNode {
 			{//depart the requests.
 				long elapse = nextDepartureTime - currTime;
 				assert elapse > 0;
-				assert currLoad == (double)currRequests.size()/(double)maxConRequests;
-				assert currPower == (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
+				assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
+				assert currPower == calcPower(maxPower,currLoad,state);
 
 				long globalMax = this.deteCurrGlobalMaxSpeed();
 				//update each request in outstanding request list
@@ -332,8 +328,8 @@ public class ServerNode {
 				totalConsumption += currPower * elapse;
 				currTime += elapse;
 				//update load power bw
-				currLoad = (double)currRequests.size()/(double)maxConRequests;
-				currPower = (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
+				currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
+				currPower = calcPower(maxPower,currLoad,state);
 				currBW = 0;
 				for(Request req:currRequests)
 				{
@@ -357,7 +353,7 @@ public class ServerNode {
 		}
 		else
 		{
-			globalMaxSpeed = (long)((double)maxBW/(double)currRequests.size());
+			globalMaxSpeed = (long)((double)state.getMaxBW()/(double)currRequests.size());
 			globalMaxSpeed = Math.min(globalMaxSpeed, SPEED_LIMIT);
 		}
 		return globalMaxSpeed;
@@ -558,7 +554,6 @@ public class ServerNode {
 			//still stable
 			break;
 		}
-		//req.setTimeAlive(req.getTimeAlive()+elapse);
 		log.debug("[UpdateRequest][AFTER][elapse="+elapse +"]:"+req.toString());
 		assert req.getSizeLeft() > 0;
 	}
@@ -574,8 +569,8 @@ public class ServerNode {
 			HashSet<Request> toRemove = this.getNextDepartureRequests();
 			long elapse = nextDepartureTime - currTime;
 			assert (elapse==0 && toRemove.size()==0) || (elapse!=0 && toRemove.size()!=0);
-			assert currLoad == (double)currRequests.size()/(double)maxConRequests;
-			assert currPower == (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
+			assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
+			assert currPower == calcPower(maxPower,currLoad,state);
 
 			long globalMax = this.deteCurrGlobalMaxSpeed();
 			//update each request in outstand request list
@@ -590,8 +585,8 @@ public class ServerNode {
 			requestHandled += toRemove.size();
 			currRequests.removeAll(toRemove);
 			totalConsumption += currPower * elapse;
-			currLoad = (double)currRequests.size()/(double)maxConRequests;
-			currPower = (idlePowerRate+(1-idlePowerRate)*currLoad)*maxPower;
+			currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
+			currPower = calcPower(maxPower,currLoad,state);
 			currTime += elapse;
 			currBW = 0;
 			for(Request req:currRequests)
@@ -608,24 +603,21 @@ public class ServerNode {
 	{
 		if(args.length == 0)
 		{
-			System.out.println("usage: ./java ServerNode [Name] [Location] [maxConcurrentRequest] [MaxBindWidth] [MaxPower] [IdlePowerRate] [Op[LBAddr:LBPort]]");
+			System.out.println("usage: ./java ServerNode [Name] [Location] [MaxPower] [Op[LBAddr:LBPort]]");
 		}
 		else 
 		{
 			String name = args[0];
 			Location loc = Location.valueOf(args[1]);
-			int maxConcRequests = Integer.parseInt(args[2]);  //500
-			long maxBW = Long.parseLong(args[3]);//100*1000;  //bytes per millsecond  approx= 100 MegaBytes/s
-			double maxPower = Double.parseDouble(args[4]);//500/1000;  //500 Watt  - unit J/millisecond
-			double idlePowerRate = Double.parseDouble(args[5]); //0.7;  
+			double maxPower = Double.parseDouble(args[2]);//500/1000;  //500 Watt  - unit J/millisecond
 			
-			String lbAddr = args.length==6?LoadBalancer.DEFAULT_LB_ADDR:args[6].split(":")[0];
-			int lbPort = args.length==6?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[6].split(":")[1]);
+			String lbAddr = args.length==6?LoadBalancer.DEFAULT_LB_ADDR:args[3].split(":")[0];
+			int lbPort = args.length==6?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[3].split(":")[1]);
 			
 			String filename = ".//report//"+name + "." + loc.name()+".report";
 			PrintStream report = new PrintStream(new FileOutputStream(new File(filename)), true);
 			
-			ServerNode server = new ServerNode(name,loc,maxConcRequests,maxBW,maxPower,idlePowerRate, lbPort,lbAddr,report);
+			ServerNode server = new ServerNode(name,loc,maxPower,lbPort,lbAddr,report);
 			server.register();
 			server.running();
 		}
