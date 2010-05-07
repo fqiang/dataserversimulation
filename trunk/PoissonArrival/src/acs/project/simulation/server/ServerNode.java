@@ -17,6 +17,7 @@ import acs.project.simulation.common.RequestEvent;
 import acs.project.simulation.common.ServerConfigInfo;
 import acs.project.simulation.common.ServerStatus;
 import acs.project.simulation.common.SimulationEnd;
+import acs.project.simulation.common.State;
 import acs.project.simulation.common.StateChangeRequest;
 import acs.project.simulation.common.StatusRequest;
 import acs.project.simulation.common.TimeStamp;
