@@ -17,18 +17,14 @@ import acs.project.simulation.common.RequestEvent;
 import acs.project.simulation.common.ServerConfigInfo;
 import acs.project.simulation.common.ServerStatus;
 import acs.project.simulation.common.SimulationEnd;
-import acs.project.simulation.common.SleepRequest;
+import acs.project.simulation.common.StateChangeRequest;
 import acs.project.simulation.common.StatusRequest;
 import acs.project.simulation.common.TimeStamp;
-import acs.project.simulation.common.WakeUpRequest;
 import acs.project.simulation.optimization.LoadBalancer;
 
 public class ServerNode {
 	
 	public final static Logger log = Logger.getLogger(ServerNode.class);
-	
-	//simulation constant property
-	private final long SPEED_LIMIT = 300; //bytes per millsecond  - per connection
 	
 	//simulation connections
 	private Socket socket = null;    //the communication socket with LB
@@ -130,17 +126,11 @@ public class ServerNode {
 				ServerStatus status = createServerStatus();
 				this.oos.writeObject(status);
 			}
-			else if(obj instanceof SleepRequest)
+			else if(obj instanceof StateChangeRequest)
 			{//instantaneous effect
-				log.debug("[SleepRequest] ServerName["+serverName+"] CurrTime["+currTime+"]");
-				assert !state.getName().equals("SLEEP") : "At state:["+state.toString()+"]";
-				handleSleepRequest();
-			}
-			else if(obj instanceof WakeUpRequest)
-			{//instantaneous effect
-				log.debug("[WakeUpRequest] ServerName["+serverName+"] CurrTime["+currTime+"]");
-				assert state.getName().equals("SLEEP"):"At state:["+state.toString()+"]";
-				handleWakeUpRequest();
+				StateChangeRequest req = (StateChangeRequest)obj;
+				log.debug("[StateChangeRequest] serverName["+serverName+"] requestState["+req.getRequestState()+"] currState["+state.getName()+"] currTime["+currTime+"]");
+				handleStateChangeRequest(req);
 			}
 			else if(obj instanceof RequestEvent)
 			{//instantaneous effect
@@ -170,30 +160,31 @@ public class ServerNode {
 		cleanup();
 	}
 
-	private void handleWakeUpRequest() 
+	private void handleStateChangeRequest(StateChangeRequest req) 
 	{
-		assert state.getName().equals("SLEEP"):"At state:["+state.toString()+"]";
-		assert currRequests.size() == 0;
-		assert nextDepartureTime == 0;
-		assert currBW == 0;
-		assert currLoad == 0;
-		assert currPower == calcPower(maxPower, currLoad, state);
-		
+		assert !state.getName().equals(req.getRequestState()) : "state["+state.getName()+"] req["+req.getRequestState()+"]";
 		//update state
-		state = stateRet.getState("RUNNING");
-		currPower = calcPower(maxPower,currLoad,state);
-	}
-	private void handleSleepRequest() 
-	{
-		assert state.getName().equals("RUNNING");
-		//update state
-		requestDiscard += currRequests.size();
-		currRequests.clear();   //discard all the outstanding requests
+		state = stateRet.getState(req.getRequestState());
+		if(currRequests.size() <= state.getMaxConRequests())
+		{//no need to discard curr request
+		}
+		else
+		{//discard some of the current requests
+			long discard = currRequests.size() - state.getMaxConRequests();
+			assert discard > 0  : "Discard:["+discard+"]";
+			currRequests.subList(state.getMaxConRequests(), currRequests.size()).clear();
+			assert currRequests.size() == state.getMaxConRequests() : currRequests.size() + "|" + state.getMaxConRequests();
+			requestDiscard += discard;	
+		}
+		//state = newState;
 		nextDepartureTime = 0;
-		currBW = 0;
-		currLoad = 0;
-		state = stateRet.getState("SLEEP");
+		currLoad = calcLoad(currRequests.size(),state);
 		currPower = calcPower(maxPower,currLoad,state);
+		currBW = 0;
+	}
+
+	private static double calcLoad(int requestSize,State state) {
+		return state.getMaxConRequests()==0?0:(double)requestSize / (double)state.getMaxConRequests();
 	}
 
 	private void handleTimeStamp(long synchTime) 
@@ -345,12 +336,12 @@ public class ServerNode {
 	{
 		long globalMaxSpeed = 0;
 		if(currRequests.size()==0){
-			globalMaxSpeed = SPEED_LIMIT;
+			globalMaxSpeed = state.getSpeedLimit();
 		}
 		else
 		{
 			globalMaxSpeed = (long)((double)state.getMaxBW()/(double)currRequests.size());
-			globalMaxSpeed = Math.min(globalMaxSpeed, SPEED_LIMIT);
+			globalMaxSpeed = Math.min(globalMaxSpeed, state.getSpeedLimit());
 		}
 		return globalMaxSpeed;
 	}
