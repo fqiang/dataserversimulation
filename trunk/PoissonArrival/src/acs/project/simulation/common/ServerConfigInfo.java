@@ -2,6 +2,7 @@ package acs.project.simulation.common;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 
@@ -29,7 +30,9 @@ public class ServerConfigInfo implements Serializable {
 		Arrays.sort(fields,new OrderComparator());
 		for(Field f:fields){
 			try {
-				val += f.get(this) +",";
+				if(!Modifier.isFinal(f.getModifiers())){
+					val += f.get(this) +",";
+				}
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

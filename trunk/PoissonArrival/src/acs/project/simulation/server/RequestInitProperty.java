@@ -2,16 +2,10 @@ package acs.project.simulation.server;
 
 public class RequestInitProperty {
 	
-
-	public final long DEFAULT_CONN_EST_TIME = 100; //in milli, can be future improved using matrix (location,location)
-	public final long DEFAULT_RAMP_UP_TIME = 3000; //in millisecond, speed ramp up
-	public final long DEFAULT_SPEED_LIMIT = 300; //bytes per millsecond  - per connection
-	public final long DEFAULT_SPEED_INIT = 30;   //bytes per millsecond
-	
-	private long connEstTime = DEFAULT_CONN_EST_TIME;
-	private long rampUpTime = DEFAULT_RAMP_UP_TIME;
-	private long speedLimit = DEFAULT_SPEED_LIMIT;
-	private long speedInit = DEFAULT_SPEED_INIT;
+	private long connEstTime = 0;
+	private long rampUpTime = 0;
+	private long speedLimit = 0;
+	private long speedInit = 0;
 	
 	public RequestInitProperty()
 	{

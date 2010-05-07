@@ -2,6 +2,7 @@ package acs.project.simulation.server;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 import acs.project.simulation.common.OrderComparator;
@@ -17,27 +18,32 @@ public class State implements Serializable{
 	@Order(value=2)
 	private int maxConRequests;
 	@Order(value=3)
-	private long maxBW;
+	private long speedLimit;  //per connection
 	@Order(value=4)
-	private double powerRate;     //respect to max power of the server
+	private long maxBW;
 	@Order(value=5)
-	private double idlePowerRate; //represent the zero load running of the server
+	private double powerRate;     //respect to max power of the server
 	@Order(value=6)
+	private double idlePowerRate; //represent the zero load running of the server
+	@Order(value=7)
 	private static final long serialVersionUID = 2649412074112035870L;
 
-	public State(String aName,int maxC,long maxB,double pr,double ipr)
+	public State(String aName,int maxC,long speed,long maxB,double pr,double ipr)
 	{
-		init(aName, maxC, maxB, pr,ipr);
+		init(aName, maxC,speed, maxB, pr,ipr);
 	}
 	
-	public void init(String aName,int maxC,long maxB,double pr,double ipr)
+	public void init(String aName,int maxC,long speed,long maxB,double pr,double ipr)
 	{
 		name = aName;
 		maxConRequests = maxC;
+		speedLimit = speed;
 		maxBW = maxB;
 		powerRate = pr;
 		idlePowerRate = ipr;
 	}
+	
+	
 	
 	public String toString()
 	{
@@ -48,7 +54,9 @@ public class State implements Serializable{
 		{
 			buf.append(f.getName()+"[");
 			try {
-				buf.append(f.get(this).toString());
+				if(Modifier.isFinal(f.getModifiers())){
+					buf.append(f.get(this).toString());
+				}
 			}
 			catch (IllegalArgumentException e) {
 				e.printStackTrace();
@@ -101,6 +109,14 @@ public class State implements Serializable{
 
 	public double getIdlePowerRate() {
 		return idlePowerRate;
+	}
+
+	public void setSpeedLimit(long speedLimit) {
+		this.speedLimit = speedLimit;
+	}
+
+	public long getSpeedLimit() {
+		return speedLimit;
 	}
 
 }

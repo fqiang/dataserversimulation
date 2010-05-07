@@ -22,10 +22,11 @@ public class ServerStateRetiever {
 			assert col.length == 5;
 			String name = col[0];
 			int maxC = Integer.parseInt(col[1]);
-			long maxBW = Long.parseLong(col[2]);
-			double pr = Double.parseDouble(col[3]);
-			double ipr = Double.parseDouble(col[4]);
-			State newState = new State(name,maxC,maxBW,pr,ipr);
+			long speed = Long.parseLong(col[2]);
+			long maxBW = Long.parseLong(col[3]);
+			double pr = Double.parseDouble(col[4]);
+			double ipr = Double.parseDouble(col[5]);
+			State newState = new State(name,maxC,speed,maxBW,pr,ipr);
 			statemap.put(name, newState);
 			csvline = reader.readLine();
 		}while(csvline!=null);
