@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import acs.project.simulation.common.State;
+
 public class ServerStateRetiever {
 	
 	private HashMap<String,State> statemap = null;
@@ -19,7 +21,7 @@ public class ServerStateRetiever {
 		do
 		{
 			String[] col = csvline.split(",");
-			assert col.length == 5;
+			assert col.length == 6;
 			String name = col[0];
 			int maxC = Integer.parseInt(col[1]);
 			long speed = Long.parseLong(col[2]);

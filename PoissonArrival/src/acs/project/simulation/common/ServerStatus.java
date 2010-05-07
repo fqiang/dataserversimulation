@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-import acs.project.simulation.server.State;
 
 public class ServerStatus implements Serializable{
 
