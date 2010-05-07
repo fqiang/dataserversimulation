@@ -28,11 +28,7 @@ public class ServerNode {
 	public final static Logger log = Logger.getLogger(ServerNode.class);
 	
 	//simulation constant property
-	private final long CONN_EST_TIME = 100; //in milli, can be future improved using matrix (location,location)
-	private final long RAMP_UP_TIME = 3000; //in millisecond, speed ramp up
 	private final long SPEED_LIMIT = 300; //bytes per millsecond  - per connection
-	private final long SPEED_INIT = 30;   //bytes per millsecond
-	private final double SLEEP_POWER_RATE = 0.05;
 	
 	//simulation connections
 	private Socket socket = null;    //the communication socket with LB
@@ -130,7 +126,7 @@ public class ServerNode {
 			if(obj instanceof StatusRequest)
 			{//Query effect
 				log.debug("[StatusRequest]  - CurrTime["+currTime+"]");
-				StatusRequest req = (StatusRequest)obj;
+				//StatusRequest req = (StatusRequest)obj;
 				ServerStatus status = createServerStatus();
 				this.oos.writeObject(status);
 			}
@@ -360,7 +356,7 @@ public class ServerNode {
 	}
 	
 	//formula by quadratic equation, area2 = 2*area
-	private long solveHeight(long a, long area2,double rate)
+	private static long solveHeight(long a, long area2,double rate)
 	{
 		double da = (double)a;
 		double darea2 = (double)area2;
@@ -368,19 +364,19 @@ public class ServerNode {
 		return (long)time;
 	}
 	
-	private long calcTrapeZoidArea2(long a,long b,long h)
+	private static long calcTrapeZoidArea2(long a,long b,long h)
 	{
 		return (a+b)*h;
 	}
 	
-	private long solveHeight(long a,long area)
+	private static long solveHeight(long a,long area)
 	{
 		double darea =(double)area;
 		double da = (double)a;
 		return (long)(darea/da);
 	}
 	
-	private long calcRectangleArea(long a,long b)
+	private static long calcRectangleArea(long a,long b)
 	{
 		return a*b;
 	}
@@ -406,19 +402,19 @@ public class ServerNode {
 			case INIT:
 				assert req.getSizeLeft() == req.getEvent().getSize();
 				ph1_time = reqAlive>req.getConnEstTime()?0:req.getConnEstTime()-reqAlive;
-				long cantrans2 = this.calcTrapeZoidArea2(req.getInitSpeed(), maxReqSpeed, req.getRamupTime());
+				long cantrans2 = calcTrapeZoidArea2(req.getInitSpeed(), maxReqSpeed, req.getRamupTime());
 				long actualSize2 = 2*req.getSizeLeft();
 				if(cantrans2>=actualSize2){ 
 				//finish in phase 2
 					double rate = (double)(maxReqSpeed-req.getInitSpeed())/(double)(req.getRamupTime());
-					ph2_time = this.solveHeight(req.getInitSpeed(), actualSize2, rate);
+					ph2_time = solveHeight(req.getInitSpeed(), actualSize2, rate);
 					assert ph2_time <= req.getRamupTime() && ph2_time>=0;
 				}
 				else {
 					ph2_time = req.getRamupTime();
 					long leftSize = req.getSizeLeft() - (long)(cantrans2/2);
 					assert leftSize > 0;
-					ph3_time = this.solveHeight(maxReqSpeed, leftSize);
+					ph3_time = solveHeight(maxReqSpeed, leftSize);
 				}
 				currDepartInterval = ph1_time + ph2_time + ph3_time;
 				break;
@@ -426,24 +422,24 @@ public class ServerNode {
 				long rsizeleft2 = 2*req.getSizeLeft();
 				long rrampupleft = req.getConnEstTime()+req.getRamupTime() - reqAlive;
 				long rcurrSpeed = req.getCurrSpeed()==0?req.getInitSpeed():req.getCurrSpeed();
-				long rtrans2 = this.calcTrapeZoidArea2(rcurrSpeed, maxReqSpeed, rrampupleft);
+				long rtrans2 = calcTrapeZoidArea2(rcurrSpeed, maxReqSpeed, rrampupleft);
 				if(rtrans2 >= rsizeleft2)
 				{//finish at phase 2
 					double rate = (double)(maxReqSpeed-rcurrSpeed)/(double)(rrampupleft);
-					ph2_time = this.solveHeight(rcurrSpeed, rsizeleft2, rate);
+					ph2_time = solveHeight(rcurrSpeed, rsizeleft2, rate);
 					assert ph2_time >= 0 && ph2_time <= rrampupleft;
 				}
 				else
 				{//to phase 3
 					ph2_time = rrampupleft;
 					long rleft =(long)((rsizeleft2 - rtrans2)/2d);
-					ph3_time = this.solveHeight(maxReqSpeed, rleft);
+					ph3_time = solveHeight(maxReqSpeed, rleft);
 					assert ph3_time >= 0;
 				}
 				currDepartInterval = ph2_time + ph3_time;
 				break;
 			case STABLE:
-				ph3_time = this.solveHeight(maxReqSpeed, req.getSizeLeft());
+				ph3_time = solveHeight(maxReqSpeed, req.getSizeLeft());
 				currDepartInterval = ph3_time;
 				break;
 			}
@@ -489,8 +485,8 @@ public class ServerNode {
 				{
 					assert rampuptime == req.getRamupTime();
 					//long currSpeed = currMaxSpeed;
-					long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getInitSpeed(), currMaxSpeed, req.getRamupTime()))/2d);
-					long stabletrans = this.calcRectangleArea(currMaxSpeed, stabletime);
+					long rampuptrans = (long)((double)(calcTrapeZoidArea2(req.getInitSpeed(), currMaxSpeed, req.getRamupTime()))/2d);
+					long stabletrans = calcRectangleArea(currMaxSpeed, stabletime);
 					long sizeleft = req.getSizeLeft() - rampuptrans - stabletrans;
 					assert sizeleft > 0;
 					req.setState(Phase.STABLE);
@@ -503,7 +499,7 @@ public class ServerNode {
 					double rate = (double)(currMaxSpeed-req.getInitSpeed())/(double)(req.getRamupTime());
 					long currSpeed = req.getInitSpeed()+(long)((double)rampuptime*rate);
 					assert currSpeed < currMaxSpeed;
-					long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getInitSpeed(), currSpeed, rampuptime))/2d);
+					long rampuptrans = (long)((double)(calcTrapeZoidArea2(req.getInitSpeed(), currSpeed, rampuptime))/2d);
 					long sizeleft = req.getSizeLeft() - rampuptrans;
 					assert sizeleft > 0;
 					assert timeAlive + elapse < req.getConnEstTime() + req.getRamupTime();
@@ -523,8 +519,8 @@ public class ServerNode {
 			long stabletime = elapse - rampupleft;
 			if(stabletime>=0)
 			{
-				long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getCurrSpeed(), currMaxSpeed, rampupleft))/2d);
-				long stabletrans = this.calcRectangleArea(currMaxSpeed, stabletime);
+				long rampuptrans = (long)((double)(calcTrapeZoidArea2(req.getCurrSpeed(), currMaxSpeed, rampupleft))/2d);
+				long stabletrans = calcRectangleArea(currMaxSpeed, stabletime);
 				long sizeleft = req.getSizeLeft() - rampuptrans - stabletrans;
 				assert sizeleft > 0;
 				req.setState(Phase.STABLE);
@@ -537,7 +533,7 @@ public class ServerNode {
 				double rate = (double)(currMaxSpeed - req.getCurrSpeed())/(double)(rampupleft);
 				long currSpeed = req.getCurrSpeed()+(long)((double)elapse*rate);
 				assert currSpeed < currMaxSpeed;
-				long rampuptrans = (long)((double)(this.calcTrapeZoidArea2(req.getCurrSpeed(), currSpeed, elapse))/2d);
+				long rampuptrans = (long)((double)(calcTrapeZoidArea2(req.getCurrSpeed(), currSpeed, elapse))/2d);
 				long sizeleft = req.getSizeLeft() - rampuptrans;
 				assert sizeleft > 0: "sizeleft["+sizeleft+"]";
 				req.setSizeLeft(sizeleft);
@@ -546,7 +542,7 @@ public class ServerNode {
 			}
 			break;
 		case STABLE:
-			long stabletrans = this.calcRectangleArea(currMaxSpeed, elapse);
+			long stabletrans = calcRectangleArea(currMaxSpeed, elapse);
 			long sizeleft = req.getSizeLeft() - stabletrans;
 			req.setSizeLeft(sizeleft);
 			req.setCurrSpeed(currMaxSpeed);
