@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import acs.project.simulation.server.ServerState;
+import acs.project.simulation.server.State;
 
 public class ServerStatus implements Serializable{
 
@@ -31,7 +31,7 @@ public class ServerStatus implements Serializable{
 	@Order(value=9)
 	private double currTolConsumption = 0;
 	@Order(value=10)
-	private ServerState state;
+	private State state;
 	@Order(value=11)
 	private static final long serialVersionUID = -964803076899075800L;
 	
@@ -127,11 +127,11 @@ public class ServerStatus implements Serializable{
 		return requestDiscard;
 	}
 
-	public void setState(ServerState state) {
+	public void setState(State state) {
 		this.state = state;
 	}
 
-	public ServerState getState() {
+	public State getState() {
 		return state;
 	}
 
