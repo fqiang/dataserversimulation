@@ -301,7 +301,75 @@ public class ServerNode {
 			currTime = synchTime;
 		}
 	}
-	
+	private void handleOutStandingRequests() 
+	{
+		log.debug("handling outstanding requests");
+		while(true)
+		{
+			if(currRequests.size()==0) break; //no outstanding requests
+			
+			//calculate nextDepartureTime and make the hashset to be removed
+			HashSet<Request> toRemove = this.getNextDepartureRequests();
+			long nextDepartTime = toRemove.size()==0?Long.MAX_VALUE:nextDepartureTime;
+			long nextEnergyTime = engProvider.nextEnergyStartTime(currTime);
+			long minTime = Math.min(nextDepartTime, nextEnergyTime);
+			
+			if(minTime==nextDepartTime) {
+    			long elapse = nextDepartTime - currTime;
+    			assert (elapse==0 && toRemove.size()==0) || (elapse!=0 && toRemove.size()!=0);
+    			assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
+    			assert currPower == calcPower(maxPower,currLoad,state);
+    
+    			long globalMax = this.deteCurrGlobalMaxSpeed();
+    			//update each request in outstand request list
+    			for(Request req:currRequests)
+    			{
+    				if(!toRemove.contains(req)){
+    					this.updateRequest(elapse, req, globalMax);
+    				}
+    			}
+    			
+    			//update status 
+    			requestHandled += toRemove.size();
+    			currRequests.removeAll(toRemove);
+    			totalConsumption += currPower * elapse;
+    			currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
+    			currPower = calcPower(maxPower,currLoad,state);
+    			currTime += elapse;
+    			currBW = 0;
+    			for(Request req:currRequests)
+    			{
+    				currBW += req.getCurrSpeed();
+    			}
+    			assert currTime == nextDepartTime;
+			}
+			if(minTime==nextEnergyTime)
+			{
+				assert nextDepartTime >= nextEnergyTime;
+				long elapse = nextEnergyTime - currTime;
+				if(elapse!=0){
+    				long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
+    				for(Request req:currRequests)
+    				{
+    					this.updateRequest(elapse, req, globalMaxSpeed);
+    				}
+    				//update status 
+    				totalConsumption += currPower * elapse;
+    				currTime += elapse;
+    				currBW = 0;
+    				for(Request req:currRequests)
+    				{
+    					currBW += req.getCurrSpeed();
+    				}
+				}
+				EnergyType newEnergy = engProvider.getEnergyType(currTime);
+				assert !newEnergy.getName().equals(currEnergy.getName());
+				currEnergy = newEnergy;
+				assert currTime == nextEnergyTime;	
+			}	
+		}
+		log.debug("Done! Server Simulation finished..");
+	}
 	private ServerStatus createServerStatus() 
 	{
 		assert requestRecv == requestDiscard + requestHandled + currRequests.size();
@@ -568,47 +636,6 @@ public class ServerNode {
 		log.debug("[UpdateRequest][AFTER][elapse="+elapse +"]:"+req.toString());
 		assert req.getSizeLeft() > 0;
 	}
-	
-	private void handleOutStandingRequests() 
-	{
-		log.debug("handling outstanding requests");
-		while(true)
-		{
-			if(currRequests.size()==0) break; //no outstanding requests
-			
-			//calculate nextDepartureTime and make the hashset to be removed
-			HashSet<Request> toRemove = this.getNextDepartureRequests();
-			long elapse = nextDepartureTime - currTime;
-			assert (elapse==0 && toRemove.size()==0) || (elapse!=0 && toRemove.size()!=0);
-			assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
-			assert currPower == calcPower(maxPower,currLoad,state);
-
-			long globalMax = this.deteCurrGlobalMaxSpeed();
-			//update each request in outstand request list
-			for(Request req:currRequests)
-			{
-				if(!toRemove.contains(req)){
-					this.updateRequest(elapse, req, globalMax);
-				}
-			}
-			
-			//update status 
-			requestHandled += toRemove.size();
-			currRequests.removeAll(toRemove);
-			totalConsumption += currPower * elapse;
-			currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
-			currPower = calcPower(maxPower,currLoad,state);
-			currTime += elapse;
-			currBW = 0;
-			for(Request req:currRequests)
-			{
-				currBW += req.getCurrSpeed();
-			}
-			
-		}
-		log.debug("Done! Server Simulation finished..");
-	}
-	
 	
 	public static void main(String[] args) throws Exception
 	{

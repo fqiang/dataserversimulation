@@ -84,7 +84,8 @@
     </target>
     <target name="MyLittleTest">
         <java classname="acs.project.simulation.server.MyLittleTest" failonerror="true" fork="yes">
-            <classpath refid="run.MyLittleTest.classpath"/>
+            <assertions><enable/></assertions>
+        	<classpath refid="run.MyLittleTest.classpath"/>
         </java>
     </target>
     <target name="ServerNode_American">
