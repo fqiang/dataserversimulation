@@ -32,7 +32,7 @@ public class LoadBalancer {
 	//simulation properties constant
 	public static final int DEFAULT_LB_PORT = 4000;
 	public static final String DEFAULT_LB_ADDR = "localhost";
-	public static final int DEAFAULT_TOTAL_SERVERS = 3;
+	public static final int DEAFAULT_TOTAL_SERVERS = 5;
 	
 	//simulation properties
 	private int numOfServers = 0;
@@ -111,21 +111,26 @@ public class LoadBalancer {
 	public void running() throws InterruptedException, IOException, ClassNotFoundException
 	{	
 		log.debug("LoadBalancer start running");
+		
+		//event feeder helper obj
 		EventFeeder efeeder = new EventFeeder();
 		
+		//initialize server
+		strategy.init(serverlist);
+		
+		//main loop
 		while(true)
 		{
-			//Thread.currentThread().sleep(4000);
 			RequestEvent[] events = efeeder.nextEvents();
-			if(events.length==0){
-				//no more events
-				break;
-			}
+			
+			//no more events
+			if(events.length==0){  break; }
+			
 			long nowtime = events[0].getTime();
 			long pretime = 0;
 			
 			//first broad cast the new timestamp
-			log.debug("   Time tick: "+nowtime);
+			log.debug("Event Time["+nowtime +"] Num["+events.length+"]");
 			
 			TimeStamp ts = new TimeStamp(nowtime);
 			broadcast(ts);
@@ -175,7 +180,7 @@ public class LoadBalancer {
 
 				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
 				reportPrinter.println("+Server Name: "+server.getInfo().getServerName());
-				reportPrinter.println(server.status.toString());
+				reportPrinter.println("+Final Status:"+server.status.toString());
 				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
 			}
 		}

@@ -43,4 +43,9 @@ public class SimpleStrategy implements EnergyAwareStrategyInterface {
 		return profile;
 	}
 
+	@Override
+	public void init(List<ArrayList<ServerProfile>> serverlist) {
+		log.debug("Init all server nodes");
+	}
+
 }
