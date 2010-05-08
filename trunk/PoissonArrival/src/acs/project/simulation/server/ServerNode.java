@@ -47,12 +47,13 @@ public class ServerNode {
 	private long requestRecv;
 	private long requestDiscard;
 	private long requestHandled;
+	private State state = null;
 	private long currTime = 0;          //simulation time
 	private long  currBW = 0;       //in byte       = sum of all req.getCurrSpeed()
 	private double currPower = 0;   //in Joule per millisecond = (idelPowerRate + (1-idelPowerRate)*currLoad)*maxPower
 	private double currLoad = 0;    // the req load = currRequest.size()/maxConRequest
 	private double totalConsumption = 0;  //in Joule
-	private State state = null;
+	private EnergyType currEnergy = null;
 
 	//global temporary variable
 	private long nextDepartureTime = 0; //next request(s) depature time
@@ -60,13 +61,14 @@ public class ServerNode {
 	//helper obj
 	private RequestInitPropertyRetriever propRet = null;
 	private ServerStateRetiever stateRet = null;
+	private EnergyProvider engProvider = null;
 	
 	public ServerNode(String name,Location loc,double max_power,int lb_port,String lb_addr,PrintStream report) throws IOException
 	{
 		//helper obj init
 		propRet = new RequestInitPropertyRetriever();
 		stateRet = new ServerStateRetiever();
-		
+		engProvider = new EnergyProvider();
 		
 		//system config init
 		this.serverName = name;
@@ -87,6 +89,7 @@ public class ServerNode {
 		this.currLoad = 0;
 		this.currPower = calcPower(maxPower,currLoad,state);
 		this.totalConsumption = 0;
+		this.currEnergy = engProvider.getEnergyType(currTime);
 	}
 
 	private static double calcPower(double maxP,double load,State state) {
@@ -190,13 +193,101 @@ public class ServerNode {
 
 	private void handleTimeStamp(long synchTime) 
 	{
-		if(state.getName().equals("RUNNING"))
+		if(!state.getName().equals("SLEEP"))
 		{
-			departRequestsUntil(synchTime);
-			advanceSimulationTo(synchTime);
+			assert state.getName().equals("RUNNING");
+			while(true) 
+			{
+    			if(currTime==synchTime)  break;
+    			
+    			HashSet<Request> toRemove = this.getNextDepartureRequests();
+    			long nextDepartTime = toRemove.size()==0?Long.MAX_VALUE:nextDepartureTime;
+    			long nextEnergyTime = engProvider.nextEnergyStartTime(currTime);
+    			long minTime = Math.min(Math.min(nextDepartTime, synchTime),nextEnergyTime);
+    			
+    			if(minTime == nextDepartTime) 
+    			{//depart requests in toRemove		
+    				long elapse = nextDepartTime - currTime;
+    				assert elapse > 0;
+    				assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
+    				assert currPower == calcPower(maxPower,currLoad,state);
+    				
+    				long globalMax = this.deteCurrGlobalMaxSpeed();
+    				//update each request in outstanding request list
+    				for(Request req:currRequests)
+    				{
+    					if(!toRemove.contains(req)){
+    						this.updateRequest(elapse, req, globalMax);
+    					}
+    				}
+    				
+    				//update status 
+    				requestHandled += toRemove.size();
+    				currRequests.removeAll(toRemove);
+    				totalConsumption += currPower * elapse;
+    				currTime += elapse;
+    				//update load power bw
+    				currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
+    				currPower = calcPower(maxPower,currLoad,state);
+    				currBW = 0;
+    				for(Request req:currRequests)
+    				{
+    					currBW += req.getCurrSpeed();
+    				}
+    				assert currTime == nextDepartTime;
+    			}
+    			if(minTime == nextEnergyTime)
+    			{//proceed to nextEnergyTime and switch energy at the end
+    				//assert no more departure or before nextEnergyTime
+    				assert nextDepartTime >= nextEnergyTime;
+    				long elapse = nextEnergyTime - currTime;
+    				if(elapse!=0){
+        				long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
+        				for(Request req:currRequests)
+        				{
+        					this.updateRequest(elapse, req, globalMaxSpeed);
+        				}
+        				//update status 
+        				totalConsumption += currPower * elapse;
+        				currTime += elapse;
+        				currBW = 0;
+        				for(Request req:currRequests)
+        				{
+        					currBW += req.getCurrSpeed();
+        				}
+    				}
+    				EnergyType newEnergy = engProvider.getEnergyType(currTime);
+    				assert !newEnergy.getName().equals(currEnergy.getName());
+    				currEnergy = newEnergy;
+    				assert currTime == nextEnergyTime;	
+    			}
+    			if(minTime == synchTime)
+    			{//proceed to synchTime
+    				//assert no more departure before synchTime
+    				assert nextDepartTime >= synchTime;
+    				long elapse = synchTime - currTime;
+    				if(elapse!=0) {
+        				long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
+        				for(Request req:currRequests)
+        				{
+        					this.updateRequest(elapse, req, globalMaxSpeed);
+        				}
+        				//update status 
+        				totalConsumption += currPower * elapse;
+        				currTime += elapse;
+        				currBW = 0;
+        				for(Request req:currRequests)
+        				{
+        					currBW += req.getCurrSpeed();
+        				}
+    				}
+    				assert currTime == synchTime;
+    			}
+			}
 		}
-		else if(state.getName().equals("SLEEP"))
+		else
 		{
+			assert state.getName().equals("SLEEP");
 			assert currRequests.size() == 0;
 			assert nextDepartureTime == 0;
 			assert currBW == 0;
@@ -211,6 +302,76 @@ public class ServerNode {
 		}
 	}
 
+	@Deprecated 
+	private void advanceSimulationTo(long synchTime) 
+	{
+		//assert no more departure before synchTime
+		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
+		assert state.getName().equals("RUNNING");
+		long timeleft = synchTime - currTime;
+		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
+		for(Request req:currRequests)
+		{
+			this.updateRequest(timeleft, req, globalMaxSpeed);
+		}
+		//update status 
+		totalConsumption += currPower * timeleft;
+		currTime += timeleft;
+		currBW = 0;
+		for(Request req:currRequests)
+		{
+			currBW += req.getCurrSpeed();
+		}
+		assert currTime == synchTime;
+	}
+	
+	@Deprecated 
+	private void departRequestsUntil(long synchTime) 
+	{
+		assert !state.getName().equals("SLEEP");
+		//depart all the request before synch time
+		while(true)
+		{
+			//calculate nextDepartureTime and mkae the hashset to be removed
+			HashSet<Request> toRemove = this.getNextDepartureRequests();
+			if(toRemove.size()!=0&&nextDepartureTime<=synchTime)
+			{//depart the requests.
+				long elapse = nextDepartureTime - currTime;
+				assert elapse > 0;
+				assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
+				assert currPower == calcPower(maxPower,currLoad,state);
+				
+				long globalMax = this.deteCurrGlobalMaxSpeed();
+				//update each request in outstanding request list
+				for(Request req:currRequests)
+				{
+					if(!toRemove.contains(req)){
+						this.updateRequest(elapse, req, globalMax);
+					}
+				}
+				
+				//update status 
+				requestHandled += toRemove.size();
+				currRequests.removeAll(toRemove);
+				totalConsumption += currPower * elapse;
+				currTime += elapse;
+				//update load power bw
+				currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
+				currPower = calcPower(maxPower,currLoad,state);
+				currBW = 0;
+				for(Request req:currRequests)
+				{
+					currBW += req.getCurrSpeed();
+				}
+			}
+			else{//no more to depart
+				log.debug("no more departure at currTime["+currTime+"]");
+				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
+					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
+				break;
+			}
+		}
+	}
 
 	private ServerStatus createServerStatus() 
 	{
@@ -220,12 +381,13 @@ public class ServerNode {
 		status.setRequestRecv(requestRecv);
 		status.setRequestDiscard(requestDiscard);
 		status.setRequestHandled(requestHandled);
+		status.setState(state);
 		status.setCurrTime(currTime);
 		status.setCurrBW(currBW);
 		status.setCurrPower(currPower);
 		status.setCurrLoad(currLoad);
 		status.setCurrTolConsumption(totalConsumption);
-		status.setState(state);
+		status.setEnergy(currEnergy);
 		return status;
 	}
 	
@@ -264,75 +426,6 @@ public class ServerNode {
 		}
 	}
 	
-	private void advanceSimulationTo(long synchTime) 
-	{
-		//assert no more departure before synchTime
-		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
-		assert state.getName().equals("RUNNING");
-		long timeleft = synchTime - currTime;
-		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
-		for(Request req:currRequests)
-		{
-			this.updateRequest(timeleft, req, globalMaxSpeed);
-		}
-		//update status 
-		totalConsumption += currPower * timeleft;
-		currTime += timeleft;
-		currBW = 0;
-		for(Request req:currRequests)
-		{
-			currBW += req.getCurrSpeed();
-		}
-		assert currTime == synchTime;
-	}
-
-	private void departRequestsUntil(long synchTime) 
-	{
-		assert state.getName().equals("RUNNING");
-		//depart all the request before synch time
-		while(true)
-		{
-			//calculate nextDepartureTime and mkae the hashset to be removed
-			HashSet<Request> toRemove = this.getNextDepartureRequests();
-			if(toRemove.size()!=0&&nextDepartureTime<=synchTime)
-			{//depart the requests.
-				long elapse = nextDepartureTime - currTime;
-				assert elapse > 0;
-				assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
-				assert currPower == calcPower(maxPower,currLoad,state);
-
-				long globalMax = this.deteCurrGlobalMaxSpeed();
-				//update each request in outstanding request list
-				for(Request req:currRequests)
-				{
-					if(!toRemove.contains(req)){
-						this.updateRequest(elapse, req, globalMax);
-					}
-				}
-				
-				//update status 
-				requestHandled += toRemove.size();
-				currRequests.removeAll(toRemove);
-				totalConsumption += currPower * elapse;
-				currTime += elapse;
-				//update load power bw
-				currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
-				currPower = calcPower(maxPower,currLoad,state);
-				currBW = 0;
-				for(Request req:currRequests)
-				{
-					currBW += req.getCurrSpeed();
-				}
-			}
-			else{//no more to depart
-				log.debug("no more departure at currTime["+currTime+"]");
-				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
-					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
-				break;
-			}
-		}
-	}
-
 	private long deteCurrGlobalMaxSpeed()
 	{
 		long globalMaxSpeed = 0;
@@ -454,6 +547,7 @@ public class ServerNode {
 		}
 		nextDepartureTime = currTime + minDepartInterval;
 		log.debug("nextDepartureTime["+nextDepartureTime+"] currTime["+currTime+"] minDepartInterval["+minDepartInterval+"]");
+		assert (requests.size()==0 && minDepartInterval ==0 ) || (requests.size()!=0 && minDepartInterval!=0);
 		return requests;
 	}
 
