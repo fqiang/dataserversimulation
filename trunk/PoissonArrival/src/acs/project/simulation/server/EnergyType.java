@@ -25,7 +25,12 @@ public class EnergyType implements Serializable {
 		ghRate = rate;
 	}
 	
-	public String toString(){
+	public String toString()
+	{
+		return name;
+	}
+	
+	public String toDebugString(){
 		String val = "";
 		Field[] fields = this.getClass().getDeclaredFields();
 		Arrays.sort(fields,new OrderComparator());

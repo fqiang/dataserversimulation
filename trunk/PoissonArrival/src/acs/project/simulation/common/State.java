@@ -41,9 +41,13 @@ public class State implements Serializable{
 		idlePowerRate = ipr;
 	}
 	
-	
-	
 	public String toString()
+	{
+		return name;
+	}
+	
+	
+	public String toDebugString()
 	{
 		StringBuffer buf = new StringBuffer();	
 		Field fields[] = this.getClass().getDeclaredFields();
