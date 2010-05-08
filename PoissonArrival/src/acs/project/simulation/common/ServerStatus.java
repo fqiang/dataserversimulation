@@ -24,20 +24,22 @@ public class ServerStatus implements Serializable{
 	@Order(value=4)
 	private long requestHandled = 0;
 	@Order(value=5)
-	private long currTime = 0;
-	@Order(value=6)
-	private long currBW  = 0;
-	@Order(value=7)
-	private double currPower = 0;
-	@Order(value=8)
-	private double currLoad = 0;
-	@Order(value=9)
-	private double currTolConsumption = 0;
-	@Order(value=10)
 	private State state;
+	@Order(value=6)
+	private long currTime = 0;
+	@Order(value=7)
+	private long currBW  = 0;
+	@Order(value=8)
+	private double currPower = 0;
+	@Order(value=9)
+	private double currLoad = 0;
+	@Order(value=10)
+	private double currTolConsumption = 0;
 	@Order(value=11)
-	private EnergyType energy;
+	private double currEnvCost = 0;
 	@Order(value=12)
+	private EnergyType energy;
+	@Order(value=13)
 	private static final long serialVersionUID = -964803076899075800L;
 	
 	public ServerStatus()
@@ -148,6 +150,14 @@ public class ServerStatus implements Serializable{
 
 	public EnergyType getEnergy() {
 		return energy;
+	}
+
+	public void setCurrEnvCost(double currEnvCost) {
+		this.currEnvCost = currEnvCost;
+	}
+
+	public double getCurrEnvCost() {
+		return currEnvCost;
 	}
 
 

@@ -53,6 +53,7 @@ public class ServerNode {
 	private double currPower = 0;   //in Joule per millisecond = (idelPowerRate + (1-idelPowerRate)*currLoad)*maxPower
 	private double currLoad = 0;    // the req load = currRequest.size()/maxConRequest
 	private double totalConsumption = 0;  //in Joule
+	private double totalEnvCost = 0;
 	private EnergyType currEnergy = null;
 
 	//global temporary variable
@@ -89,6 +90,7 @@ public class ServerNode {
 		this.currLoad = 0;
 		this.currPower = calcPower(maxPower,currLoad,state);
 		this.totalConsumption = 0;
+		this.totalEnvCost = 0;
 		this.currEnergy = engProvider.getEnergyType(currTime);
 	}
 
@@ -224,6 +226,7 @@ public class ServerNode {
     				//update status 
     				requestHandled += toRemove.size();
     				currRequests.removeAll(toRemove);
+    				totalEnvCost += currPower * elapse * currEnergy.getGhRate();
     				totalConsumption += currPower * elapse;
     				currTime += elapse;
     				//update load power bw
@@ -236,31 +239,7 @@ public class ServerNode {
     				}
     				assert currTime == nextDepartTime;
     			}
-    			if(minTime == nextEnergyTime)
-    			{//proceed to nextEnergyTime and switch energy at the end
-    				//assert no more departure or before nextEnergyTime
-    				assert nextDepartTime >= nextEnergyTime;
-    				long elapse = nextEnergyTime - currTime;
-    				if(elapse!=0){
-        				long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
-        				for(Request req:currRequests)
-        				{
-        					this.updateRequest(elapse, req, globalMaxSpeed);
-        				}
-        				//update status 
-        				totalConsumption += currPower * elapse;
-        				currTime += elapse;
-        				currBW = 0;
-        				for(Request req:currRequests)
-        				{
-        					currBW += req.getCurrSpeed();
-        				}
-    				}
-    				EnergyType newEnergy = engProvider.getEnergyType(currTime);
-    				assert !newEnergy.getName().equals(currEnergy.getName());
-    				currEnergy = newEnergy;
-    				assert currTime == nextEnergyTime;	
-    			}
+   
     			if(minTime == synchTime)
     			{//proceed to synchTime
     				//assert no more departure before synchTime
@@ -273,6 +252,7 @@ public class ServerNode {
         					this.updateRequest(elapse, req, globalMaxSpeed);
         				}
         				//update status 
+        				totalEnvCost += currPower * elapse * currEnergy.getGhRate();
         				totalConsumption += currPower * elapse;
         				currTime += elapse;
         				currBW = 0;
@@ -283,22 +263,75 @@ public class ServerNode {
     				}
     				assert currTime == synchTime;
     			}
+    			
+    			if(minTime == nextEnergyTime)
+    			{//proceed to nextEnergyTime and switch energy at the end
+    				//assert no more departure or before nextEnergyTime
+    				assert nextDepartTime >= nextEnergyTime;
+    				long elapse = nextEnergyTime - currTime;
+    				if(elapse!=0){
+        				long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
+        				for(Request req:currRequests)
+        				{
+        					this.updateRequest(elapse, req, globalMaxSpeed);
+        				}
+        				//update status 
+        				totalEnvCost += currPower * elapse * currEnergy.getGhRate();
+        				totalConsumption += currPower * elapse;
+        				currTime += elapse;
+        				currBW = 0;
+        				for(Request req:currRequests)
+        				{
+        					currBW += req.getCurrSpeed();
+        				}
+    				}
+    				assert currTime == nextEnergyTime;	
+    				EnergyType newEnergy = engProvider.getEnergyType(currTime);
+    				assert !newEnergy.getName().equals(currEnergy.getName());
+    				currEnergy = newEnergy;
+    			}
 			}
 		}
 		else
 		{
-			assert state.getName().equals("SLEEP");
-			assert currRequests.size() == 0;
-			assert nextDepartureTime == 0;
-			assert currBW == 0;
-			assert currLoad == 0;
-			assert currPower == calcPower(maxPower,currLoad,state);
-			
-			long elapse = synchTime - currTime;
-			
-			//update state
-			totalConsumption += currPower * elapse;
-			currTime = synchTime;
+			while(true) 
+			{
+    			assert state.getName().equals("SLEEP");
+    			assert currRequests.size() == 0;
+    			assert nextDepartureTime == 0;
+    			assert currBW == 0;
+    			assert currLoad == 0;
+    			assert currPower == calcPower(maxPower,currLoad,state);
+    			
+    			if(currTime == synchTime) break;
+    			
+    			long nextEnergyTime = engProvider.nextEnergyStartTime(currTime);
+    			long minTime = Math.min(synchTime, nextEnergyTime);
+    			
+    			if(minTime == synchTime) 
+    			{
+        			long elapse = synchTime - currTime;	
+        			//update state
+        			totalEnvCost += currPower * elapse * currEnergy.getGhRate();
+        			totalConsumption += currPower * elapse;
+        			currTime += elapse;
+        			assert currTime == synchTime;
+    			}
+    			
+    			if(minTime == nextEnergyTime)
+    			{
+    				long elapse = synchTime - currTime;	
+        			//update state
+        			totalEnvCost += currPower * elapse * currEnergy.getGhRate();
+        			totalConsumption += currPower * elapse;
+        			currTime += elapse;
+        			
+        			assert currTime == nextEnergyTime;	
+        			EnergyType newEnergy = engProvider.getEnergyType(currTime);
+    				assert !newEnergy.getName().equals(currEnergy.getName());
+    				currEnergy = newEnergy;
+    			}
+			}
 		}
 	}
 	private void handleOutStandingRequests() 
@@ -332,6 +365,7 @@ public class ServerNode {
     			//update status 
     			requestHandled += toRemove.size();
     			currRequests.removeAll(toRemove);
+    			totalEnvCost += currPower * elapse * currEnergy.getGhRate();
     			totalConsumption += currPower * elapse;
     			currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
     			currPower = calcPower(maxPower,currLoad,state);
@@ -354,6 +388,7 @@ public class ServerNode {
     					this.updateRequest(elapse, req, globalMaxSpeed);
     				}
     				//update status 
+    				totalEnvCost += currPower * elapse * currEnergy.getGhRate();
     				totalConsumption += currPower * elapse;
     				currTime += elapse;
     				currBW = 0;
@@ -384,6 +419,7 @@ public class ServerNode {
 		status.setCurrPower(currPower);
 		status.setCurrLoad(currLoad);
 		status.setCurrTolConsumption(totalConsumption);
+		status.setCurrEnvCost(totalEnvCost);
 		status.setEnergy(currEnergy);
 		return status;
 	}
@@ -401,7 +437,8 @@ public class ServerNode {
 		reportPrinter.println("============================================");
 		reportPrinter.println("Simulation Finished - at "+currTime);
 		reportPrinter.println("Total Consumption:" + totalConsumption);
-		reportPrinter.println(status.toString());
+		reportPrinter.println("Total Environment Cost:" + totalEnvCost);
+		reportPrinter.println("Final Server Status:["+status.toString()+"]");
 		reportPrinter.println("============================================");
 	}
 
