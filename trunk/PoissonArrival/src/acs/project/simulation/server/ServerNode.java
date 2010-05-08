@@ -301,7 +301,7 @@ public class ServerNode {
 			currTime = synchTime;
 		}
 	}
-
+/*
 	@Deprecated 
 	private void advanceSimulationTo(long synchTime) 
 	{
@@ -372,7 +372,7 @@ public class ServerNode {
 			}
 		}
 	}
-
+*/
 	private ServerStatus createServerStatus() 
 	{
 		assert requestRecv == requestDiscard + requestHandled + currRequests.size();
