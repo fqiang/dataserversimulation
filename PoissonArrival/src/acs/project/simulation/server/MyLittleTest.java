@@ -42,13 +42,14 @@ public class MyLittleTest {
 		}
 		
 		int newSize = 4;
-		test.subList(newSize, test.size()+1).clear();
+		test.subList(newSize, test.size()).clear();
 		System.out.println();
 		
 		for(int i=0;i<test.size();i++)
 		{
 			System.out.println("["+i+"] "+test.get(i));
 		}
+		assert false : "set to fail!!";
 		
 	}
 }
