@@ -301,78 +301,7 @@ public class ServerNode {
 			currTime = synchTime;
 		}
 	}
-/*
-	@Deprecated 
-	private void advanceSimulationTo(long synchTime) 
-	{
-		//assert no more departure before synchTime
-		assert nextDepartureTime==currTime||nextDepartureTime > synchTime;
-		assert state.getName().equals("RUNNING");
-		long timeleft = synchTime - currTime;
-		long globalMaxSpeed = this.deteCurrGlobalMaxSpeed();
-		for(Request req:currRequests)
-		{
-			this.updateRequest(timeleft, req, globalMaxSpeed);
-		}
-		//update status 
-		totalConsumption += currPower * timeleft;
-		currTime += timeleft;
-		currBW = 0;
-		for(Request req:currRequests)
-		{
-			currBW += req.getCurrSpeed();
-		}
-		assert currTime == synchTime;
-	}
 	
-	@Deprecated 
-	private void departRequestsUntil(long synchTime) 
-	{
-		assert !state.getName().equals("SLEEP");
-		//depart all the request before synch time
-		while(true)
-		{
-			//calculate nextDepartureTime and mkae the hashset to be removed
-			HashSet<Request> toRemove = this.getNextDepartureRequests();
-			if(toRemove.size()!=0&&nextDepartureTime<=synchTime)
-			{//depart the requests.
-				long elapse = nextDepartureTime - currTime;
-				assert elapse > 0;
-				assert currLoad == (double)currRequests.size()/(double)state.getMaxConRequests();
-				assert currPower == calcPower(maxPower,currLoad,state);
-				
-				long globalMax = this.deteCurrGlobalMaxSpeed();
-				//update each request in outstanding request list
-				for(Request req:currRequests)
-				{
-					if(!toRemove.contains(req)){
-						this.updateRequest(elapse, req, globalMax);
-					}
-				}
-				
-				//update status 
-				requestHandled += toRemove.size();
-				currRequests.removeAll(toRemove);
-				totalConsumption += currPower * elapse;
-				currTime += elapse;
-				//update load power bw
-				currLoad = (double)currRequests.size()/(double)state.getMaxConRequests();
-				currPower = calcPower(maxPower,currLoad,state);
-				currBW = 0;
-				for(Request req:currRequests)
-				{
-					currBW += req.getCurrSpeed();
-				}
-			}
-			else{//no more to depart
-				log.debug("no more departure at currTime["+currTime+"]");
-				assert nextDepartureTime==currTime||nextDepartureTime > synchTime : 
-					"nextDepartureTime["+nextDepartureTime+"] synchTime["+synchTime+"] currTime["+currTime+"]";
-				break;
-			}
-		}
-	}
-*/
 	private ServerStatus createServerStatus() 
 	{
 		assert requestRecv == requestDiscard + requestHandled + currRequests.size();
