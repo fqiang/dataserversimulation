@@ -1,0 +1,4 @@
+Type,StartTime,Environment Cost Rate
+TRADITIONAL,0,1
+CLEAN,1800000,0
+TRADITIONAL,3600000,1

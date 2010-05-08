@@ -1,9 +1,12 @@
 package acs.project.simulation.common;
 
 import java.io.Serializable;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+
+import acs.project.simulation.server.EnergyType;
 
 
 public class ServerStatus implements Serializable{
@@ -33,6 +36,8 @@ public class ServerStatus implements Serializable{
 	@Order(value=10)
 	private State state;
 	@Order(value=11)
+	private EnergyType energy;
+	@Order(value=12)
 	private static final long serialVersionUID = -964803076899075800L;
 	
 	public ServerStatus()
@@ -135,6 +140,14 @@ public class ServerStatus implements Serializable{
 
 	public State getState() {
 		return state;
+	}
+
+	public void setEnergy(EnergyType energy) {
+		this.energy = energy;
+	}
+
+	public EnergyType getEnergy() {
+		return energy;
 	}
 
 
