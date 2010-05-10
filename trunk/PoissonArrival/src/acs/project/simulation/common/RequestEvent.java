@@ -76,7 +76,7 @@ public class RequestEvent implements Serializable{
 	public static void main(String args[])
 	{
 		System.out.println("Testing request arrival event");
-		RequestEvent event = new RequestEvent(Location.ASIAN,Timezone.GMT_0,1000,100,10);
+		RequestEvent event = new RequestEvent(Location.valueOf("ASIAN"),Timezone.GMT_0,1000,100,10);
 		System.out.println(event.toString());
 	}
 	

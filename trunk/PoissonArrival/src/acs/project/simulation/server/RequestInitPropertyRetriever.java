@@ -26,11 +26,11 @@ public class RequestInitPropertyRetriever
 		public boolean equals(Object obj)
 		{
 			LocationPair p = (LocationPair)obj;
-			if(p.loc1.equals(loc1) && p.loc2.equals(loc2))
+			if(p.loc1.ordinal()==loc1.ordinal() && p.loc2.ordinal()==loc2.ordinal())
 			{
 				return true;
 			}
-			else if(p.loc1.equals(loc2) && p.loc2.equals(loc1))
+			else if(p.loc1.ordinal()==loc2.ordinal() && p.loc2.ordinal()==loc1.ordinal())
 			{
 				return true;
 			}
@@ -90,7 +90,7 @@ public class RequestInitPropertyRetriever
 	{
 		RequestInitPropertyRetriever rev = new RequestInitPropertyRetriever();
 		System.out.println("size : "+rev.getNumOfProperties());
-		RequestInitProperty prop = rev.getProperty(Location.JAPAN, Location.ASIAN);
+		RequestInitProperty prop = rev.getProperty(Location.valueOf("AMERICAN"), Location.valueOf("AMERICAN"));
 		System.out.println(prop.getConnEstTime());
 	}
 	
