@@ -17,13 +17,15 @@ public class Location implements Serializable{
 	private String name;
 	@Order(value=2)
 	private int id;
+	@Order(value=3)
+	private static final long serialVersionUID = 5846889884629512233L;
 	
 	private static boolean initialized = false;
 	private static HashMap<String,Location> locations = null;
 	public final static String filename = "./config/RequestInitProperty.csv";
 	
-	
-	public static void init()
+	//lazy initialization
+	private static void init()
 	{
 		try {
     		if(!initialized){
