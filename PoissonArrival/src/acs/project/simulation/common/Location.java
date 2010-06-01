@@ -36,7 +36,7 @@ public class Location implements Serializable{
         		for(int i=1;i<locs.length;i++)
         		{
         			Location loc = new Location(locs[i],i-1);
-        			System.out.println(loc + " | "+locs[i] );
+        			//System.out.println(loc + " | "+locs[i] );
         			locations.put(locs[i],loc);
         		}
     		}
