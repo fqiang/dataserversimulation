@@ -135,6 +135,7 @@ public class LoadBalancer {
 			TimeStamp ts = new TimeStamp(nowtime);
 			broadcast(ts);
 			
+			strategy.management(serverlist);
 			//then dispatching the event
 			for (RequestEvent event:events)
 			{

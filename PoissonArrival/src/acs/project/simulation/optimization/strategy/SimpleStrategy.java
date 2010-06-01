@@ -2,6 +2,7 @@ package acs.project.simulation.optimization.strategy;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -41,6 +42,23 @@ public class SimpleStrategy implements EnergyAwareStrategyInterface {
 		}
 		
 		return profile;
+	}
+	
+	@Override
+	public void management(List<ArrayList<ServerProfile>> serverlist) throws IOException, ClassNotFoundException{
+		
+		for(Iterator<ArrayList<ServerProfile>> iter = serverlist.iterator();iter.hasNext();)
+		{
+			ArrayList<ServerProfile> servers = iter.next();
+    		for(ServerProfile server:servers)
+    		{
+    			StatusRequest req = new StatusRequest();
+    			server.getOos().writeObject(req);
+    			ServerStatus status = (ServerStatus)server.getOis().readObject();
+    			server.setStatus(status);
+    			assert status.getCurrLoad() <= 1;
+    		}
+		}
 	}
 
 	@Override
