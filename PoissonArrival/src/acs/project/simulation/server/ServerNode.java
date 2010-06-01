@@ -686,8 +686,8 @@ public class ServerNode {
 			Location loc = Location.valueOf(args[1]);
 			double maxPower = Double.parseDouble(args[2]);//500/1000;  //500 Watt  - unit J/millisecond
 			
-			String lbAddr = args.length==6?LoadBalancer.DEFAULT_LB_ADDR:args[3].split(":")[0];
-			int lbPort = args.length==6?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[3].split(":")[1]);
+			String lbAddr = args.length==3?LoadBalancer.DEFAULT_LB_ADDR:args[3].split(":")[0];
+			int lbPort = args.length==3?LoadBalancer.DEFAULT_LB_PORT:Integer.parseInt(args[3].split(":")[1]);
 			
 			String filename = ".//report//"+name + "." + loc.name()+".report";
 			PrintStream report = new PrintStream(new FileOutputStream(new File(filename)), true);
