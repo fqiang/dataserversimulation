@@ -11,7 +11,7 @@ public class RequestEventGenerationStrategy {
 	
 	public final static long DEFAULT_SIM_END_TIME = 3600*1000;  //1 hr
 	public final static long DEFAULT_RATE_INTERVAL = 1800*1000; //half hr
-	private final static double[] DEFAULT_LAMDAS = { 0.2d, 0.1d };
+	private final static double[] DEFAULT_LAMDAS = { 0.01d, 0.001d };
 	
 	//properties
 	private ArrayList<Double> lamdas = new ArrayList<Double>();
