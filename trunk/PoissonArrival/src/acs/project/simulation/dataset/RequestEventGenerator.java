@@ -26,7 +26,7 @@ public class RequestEventGenerator {
 	private LognorRandom lognor_rand = null;
 	private ZipfRandom zipf_rand = null;
 
-	public final Logger log = Logger.getLogger(RequestEventGenerator.class);
+	public final static Logger log = Logger.getLogger(RequestEventGenerator.class);
 
 	public RequestEventGenerator(Location location, Timezone timezone,
 			String filename, RequestEventGenerationStrategy strategy) {
@@ -49,7 +49,7 @@ public class RequestEventGenerator {
 		PrintStream file = new PrintStream(new FileOutputStream(new File(
 				filename)), true);
 		while (true) {
-			long arrival_time = (long) (currtime + exp_rand.nextExpDouble()*1000);
+			long arrival_time = (long) (currtime + exp_rand.nextExpDouble());
 			long content_size = (long) (lognor_rand.nextLognorDouble()*5000);
 			int content_rank = zipf_rand.nextZipf();
 			//exist condition
@@ -104,9 +104,10 @@ public class RequestEventGenerator {
 			System.out.println("Generating 1 hour test trace...");
 			for(Location l:Location.values())
 			{
+				log.debug("Generating Location["+l.name()+"]...");
 				Timezone t = Timezone.GMT_0;
 				String filename = "./trace/"+l.name().toLowerCase()+"_"+t.name().toLowerCase()+"_onehr_halfhr.trace";
-				RequestEventGenerator.testGenerate_1hr(l,t,filename);	
+				RequestEventGenerator.testGenerate_1hr(l,t,filename);
 			}
 		}
 		else if(args[0].equals("2"))
