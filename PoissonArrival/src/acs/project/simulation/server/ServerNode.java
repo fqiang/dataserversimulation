@@ -37,7 +37,7 @@ public class ServerNode {
 	//system property
 	private String serverName;
 	private Location location;	
-	private double maxPower;  //in J/millisecond
+	private double maxPower;  //in J/millisecond  = KW
 		
 	//report printer
 	private PrintStream reportPrinter;
@@ -153,6 +153,9 @@ public class ServerNode {
 				assert synchTime > currTime : "synchTime="+synchTime + "currTime="+currTime;
 				log.debug("[TimeStamp] - TimeStamp["+synchTime+"] CurrTime["+currTime+"] CurrLoad["+currLoad+"] reqHandled["+requestHandled+"] outstandReq["+currRequests.size()+"]");
 				handleTimeStamp(synchTime);
+				
+				//log the server status
+				reportPrinter.println(createServerStatus().toString());
 			}
 			else if(obj instanceof SimulationEnd)
 			{
@@ -434,12 +437,14 @@ public class ServerNode {
 		this.oos.close();
 		this.ois.close();
 		
-		reportPrinter.println("============================================");
-		reportPrinter.println("Simulation Finished - at "+currTime);
-		reportPrinter.println("Total Consumption:" + totalConsumption);
-		reportPrinter.println("Total Environment Cost:" + totalEnvCost);
-		reportPrinter.println("Final Server Status:["+status.toString()+"]");
-		reportPrinter.println("============================================");
+		//print the final status
+		reportPrinter.println(status.toString());
+		
+		reportPrinter.println("====,=====,=====,=====,=====,=====,=====,=====,=====,");
+		reportPrinter.println("Simulation Finished at, "+currTime);
+		reportPrinter.println("Total Consumption," + totalConsumption);
+		reportPrinter.println("Total Environment Cost," + totalEnvCost);
+		reportPrinter.println("====,=====,=====,=====,=====,=====,=====,=====,=====,");
 	}
 
 	private void handleIncomingEvent(RequestEvent event) 
@@ -691,6 +696,7 @@ public class ServerNode {
 			
 			String filename = ".//report//"+name + "." + loc.name()+".report";
 			PrintStream report = new PrintStream(new FileOutputStream(new File(filename)), true);
+			report.println(ServerStatus.getColName());
 			
 			ServerNode server = new ServerNode(name,loc,maxPower,lbPort,lbAddr,report);
 			server.register();

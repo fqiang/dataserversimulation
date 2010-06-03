@@ -129,13 +129,19 @@ public class LoadBalancer {
 			long nowtime = events[0].getTime();
 			long pretime = 0;
 			
-			//first broad cast the new timestamp
+			//first broad cast and synch the new timestamp
 			log.debug("Event Time["+nowtime +"] Num["+events.length+"]");
 			
+			//synch time
 			TimeStamp ts = new TimeStamp(nowtime);
 			broadcast(ts);
 			
+			//record trace
+			record(ts); 
+			
+			//management stratgy
 			strategy.management(serverlist);
+			
 			//then dispatching the event
 			for (RequestEvent event:events)
 			{
@@ -164,9 +170,35 @@ public class LoadBalancer {
 		cleanup();
 	}
 
+	private void record(TimeStamp ts) throws IOException, ClassNotFoundException {	
+		long totEngConsumption = 0;
+		long totEngCost = 0;
+		for(ArrayList<ServerProfile> servers:serverlist)
+		{
+			for(ServerProfile server:servers)
+			{
+				//request lastest status
+				StatusRequest request = new StatusRequest();
+				server.getOos().writeObject(request);
+				//get status report
+				ServerStatus status = (ServerStatus)server.getOis().readObject();
+				server.setStatus(status);
+				assert ts.getCurrTime() == status.getCurrTime();
+				totEngConsumption += status.getCurrTolConsumption();
+				totEngCost += status.getCurrEnvCost();
+			}
+		}
+		reportPrinter.println(ts.getCurrTime()+","+totEngConsumption+","+totEngCost);
+		
+	}
+
 	private void cleanup() throws IOException, ClassNotFoundException {
-		reportPrinter.println("*********************************************");
-		reportPrinter.println("Simulation Finished - Starting report");
+		long totEngConsumption = 0;
+		long totEngCost = 0;
+		long maxTime = 0;
+		
+		StringBuilder sb = new StringBuilder();
+		
 		for(ArrayList<ServerProfile> servers:serverlist)
 		{
 			for(ServerProfile server:servers)
@@ -178,13 +210,21 @@ public class LoadBalancer {
 				server.getSocket().close();
 				server.getOos().close();
 				server.getOis().close();
-
-				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
-				reportPrinter.println("+Server Name: "+server.getInfo().getServerName());
-				reportPrinter.println("+Final Status:"+server.status.toString());
-				reportPrinter.println("+++++++++++++++++++++++++++++++++++++++++++++++");
+				sb.append(server.getInfo().getServerName()+","+server.status.toString());
+				sb.append(System.getProperty("line.separator"));
+				
+				totEngConsumption += status.getCurrTolConsumption();
+				totEngCost += status.getCurrEnvCost();
+				maxTime = Math.max(status.getCurrTime(), maxTime);
 			}
 		}
+		
+		reportPrinter.println(maxTime+","+totEngConsumption+","+totEngCost);
+		reportPrinter.println("====,====,====,====,====,====,====,");
+		reportPrinter.println("Simulation Finished,Final Status");
+		reportPrinter.println("Server Name,"+ServerStatus.getColName());
+		reportPrinter.print(sb.toString());
+		reportPrinter.println("====,====,====,====,====,====,====,");
 	}
 
 	private void broadcast(Object obj) throws IOException {
@@ -219,6 +259,7 @@ public class LoadBalancer {
 				i++;
 			}
 			PrintStream report = new PrintStream(new FileOutputStream(file), true);
+			report.println("currTime,TotalEnergyConsumption,TotalEnvCost");
 			
 			LoadBalancer lb = new LoadBalancer(numServers,port,report);		
 			log.debug("LoadBalancer created ...");
