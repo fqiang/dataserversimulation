@@ -61,6 +61,7 @@ public class Location implements Serializable{
 		for(Iterator<String> it = locations.keySet().iterator();it.hasNext();)
 		{
 			locs[index] = locations.get(it.next());
+			index++;
 		}
 		return locs;
 	}
