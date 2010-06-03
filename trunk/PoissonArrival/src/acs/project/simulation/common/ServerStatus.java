@@ -46,6 +46,22 @@ public class ServerStatus implements Serializable{
 	{	
 	}
 
+	public static String getColName()
+	{
+		String val = "";
+		Field[] fields = ServerStatus.class.getDeclaredFields();
+		for(Field f:fields){
+			try {
+				if(!Modifier.isFinal(f.getModifiers())){
+					val += f.getName()+",";
+				}
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} 
+		}
+		return val;
+	}
+	
 	public String toString(){
 		String val = "";
 		Field[] fields = this.getClass().getDeclaredFields();
