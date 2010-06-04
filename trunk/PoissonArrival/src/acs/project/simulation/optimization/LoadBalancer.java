@@ -21,6 +21,7 @@ import acs.project.simulation.common.StatusRequest;
 import acs.project.simulation.common.TimeStamp;
 import acs.project.simulation.optimization.strategy.EnergyAwareStrategyInterface;
 import acs.project.simulation.optimization.strategy.SimpleStrategy;
+import acs.project.simulation.optimization.strategy.SustainableStrategy;
 
 public class LoadBalancer {
 
@@ -49,7 +50,8 @@ public class LoadBalancer {
 	public LoadBalancer(int numServers, int aPort, PrintStream report) throws IOException
 	{
 		//init strategy
-		strategy = new SimpleStrategy();
+		strategy = new SustainableStrategy();
+		//strategy = new SimpleStrategy();
 		
 		//init simulation properties
 		this.numOfServers = numServers;
