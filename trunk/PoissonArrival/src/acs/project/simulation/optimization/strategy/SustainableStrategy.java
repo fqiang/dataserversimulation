@@ -168,6 +168,27 @@ public class SustainableStrategy implements EnergyAwareStrategyInterface{
 			log.debug("Local Server Busy [REARLY HAPPEND]- Location["+server1.getInfo().getLocation().name()+"]");
 		}
 		
+		//try any other non-local node
+		for(ArrayList<ServerProfile> servers :serverlist)
+		{
+			for(ServerProfile server:servers)
+			{
+				if(server.getInfo().getLocation().ordinal()!=event.getLocation().ordinal())
+				{
+    				StatusRequest req = new StatusRequest();
+    				server.getOos().writeObject(req);
+    				ServerStatus status = (ServerStatus)server.getOis().readObject();
+    				server.setStatus(status);
+    				assert status.getCurrLoad() <= 1;
+    				if(status.getCurrLoad()<1)
+    				{
+    					return server;
+    				}
+				}
+			}
+		}
+		
+		log.debug("Server Busy - Discard Event["+event.toString()+"]");
 		return null;
 	}
 
