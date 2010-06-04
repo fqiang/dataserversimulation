@@ -49,6 +49,11 @@ public class MyLittleTest {
 		{
 			System.out.println("["+i+"] "+test.get(i));
 		}
+		double x = 0;
+		int xx = 0;
+		boolean v = x==xx;
+		System.out.println(v);
+		
 		assert false : "set to fail!!";
 		
 	}
