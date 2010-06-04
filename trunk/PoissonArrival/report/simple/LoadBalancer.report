@@ -19742,6 +19742,10 @@ currTime,TotalEnergyConsumption,TotalEnvCost
 3599208,12778730,3562285
 3599933,12780015,3562415
 ====,====,====,====,====,====,====,
+Request Total,99655
+Request Dispatched,99655
+Request Discarded,0
+====,====,====,====,====,====,====,
 Simulation Finished,Final Status
 Server Name,currNumReqs,requestRecv,requestDiscard,requestHandled,state,currTime,currBW,currPower,currLoad,currTolConsumption,currEnvCost,energy,
 ASIAN1,0,19931,0,19931,RUNNING,3599933,0,0.35,0.0,1296281.704000007,372755.5501000084,SOLAR,
