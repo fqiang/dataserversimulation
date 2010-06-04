@@ -1,0 +1,4 @@
+Type,StartTime,Environment Cost Rate
+TRADITIONAL,0,1
+SOLAR,600000,0.1
+TRADITIONAL,3600000,1
