@@ -96,6 +96,9 @@ public class SustainableStrategy implements EnergyAwareStrategyInterface{
 			double prev_cost = curr_cost;
 			
 			ServerProfile server0 = servers.get(0);
+			StatusRequest req_s0 = new StatusRequest();
+			server0.getOos().writeObject(req_s0);
+			server0.setStatus((ServerStatus)server0.getOis().readObject());
 			curr_cost = server0.getStatus().getEnergy().getGhRate();
 			
 			double min_cost = Math.min(prev_cost,curr_cost);
@@ -121,6 +124,7 @@ public class SustainableStrategy implements EnergyAwareStrategyInterface{
 		}
 		
 		ServerProfile server0 = best_servers.get(0);
+		
 		if(server0.getStatus().getCurrLoad()<1)
 		{
 			return server0;
@@ -129,12 +133,41 @@ public class SustainableStrategy implements EnergyAwareStrategyInterface{
 		{
 			assert server0.getStatus().getCurrLoad()==1;
 			ServerProfile server1 = best_servers.get(1);
-			if(server1.getStatus().getCurrLoad()<1)
+			StatusRequest req_s1 = new StatusRequest();
+			server1.getOos().writeObject(req_s1);
+			server1.setStatus((ServerStatus)server1.getOis().readObject());
+			
+			if(server1.getStatus().getCurrLoad()<1 && !server1.getStatus().getState().getName().equals("SLEEP"))
 			{
 				return server1;
 			}
-			log.debug("Server Busy - Location["+server1.getInfo().getLocation().name()+"]");
+			log.debug("Best Server Busy - Location["+server1.getInfo().getLocation().name()+"]");
 		}
+		
+		//roll back to local server node
+		best_servers = serverlist.get(event.getLocation().ordinal());
+		
+		server0 = best_servers.get(0);
+		
+		if(server0.getStatus().getCurrLoad()<1)
+		{
+			return server0;
+		}
+		else
+		{
+			assert server0.getStatus().getCurrLoad()==1;
+			ServerProfile server1 = best_servers.get(1);
+			StatusRequest req_s1 = new StatusRequest();
+			server1.getOos().writeObject(req_s1);
+			server1.setStatus((ServerStatus)server1.getOis().readObject());
+			
+			if(server1.getStatus().getCurrLoad()<1 &&!server1.getStatus().getState().getName().equals("SLEEP"))
+			{
+				return server1;
+			}
+			log.debug("Local Server Busy [REARLY HAPPEND]- Location["+server1.getInfo().getLocation().name()+"]");
+		}
+		
 		return null;
 	}
 
