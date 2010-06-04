@@ -223,6 +223,10 @@ public class LoadBalancer {
 		
 		reportPrinter.println(maxTime+","+totEngConsumption+","+totEngCost);
 		reportPrinter.println("====,====,====,====,====,====,====,");
+		reportPrinter.println("Request Total,"+requestTotal);
+		reportPrinter.println("Request Dispatched,"+requestDispatched);
+		reportPrinter.println("Request Discarded,"+requestDiscarded);
+		reportPrinter.println("====,====,====,====,====,====,====,");
 		reportPrinter.println("Simulation Finished,Final Status");
 		reportPrinter.println("Server Name,"+ServerStatus.getColName());
 		reportPrinter.print(sb.toString());
