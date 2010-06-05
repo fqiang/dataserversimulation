@@ -50,8 +50,8 @@ public class LoadBalancer {
 	public LoadBalancer(int numServers, int aPort, PrintStream report) throws IOException
 	{
 		//init strategy
-		strategy = new SustainableStrategy();
-		//strategy = new SimpleStrategy();
+		//strategy = new SustainableStrategy();
+		strategy = new SimpleStrategy();
 		
 		//init simulation properties
 		this.numOfServers = numServers;
