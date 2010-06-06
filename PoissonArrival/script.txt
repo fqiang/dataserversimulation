@@ -1,0 +1,23 @@
+ant -DNumServer=10 -DPort=15010 LoadBalancer &
+sleep 2
+ant -DName=CHINA1 -DLocation=CHINA -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=ASIAN1 -DLocation=ASIAN -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=JAPAN1 -DLocation=JAPAN -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=EUROPE1 -DLocation=EUROPE -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+
+ant -DName=CHINA2 -DLocation=CHINA -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=ASIAN2 -DLocation=ASIAN -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=JAPAN2 -DLocation=JAPAN -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=EUROPE2 -DLocation=EUROPE -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+
+ant -DName=AMERICAN1 -DLocation=AMERICAN -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
+sleep 2
+ant -DName=AMERICAN2 -DLocation=AMERICAN -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
