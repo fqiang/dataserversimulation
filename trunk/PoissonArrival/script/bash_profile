@@ -1,0 +1,29 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+JAVA_HOME=/usr/java/default
+ANT_HOME=/usr/local/ant/default
+PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$ANT_HOME/bin
+SVN_EDITOR=vim
+
+export PATH
+export JAVA_HOME
+export ANT_HOME
+export SVN_EDITOR
+
+SSHAGENT=/usr/bin/ssh-agent
+SSHADD=/usr/bin/ssh-add
+ID_RSA=~/.ssh/id_rsa-pl_feng
+SSHAGENTARGS="-s"
+if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+    eval `$SSHAGENT $SSHAGENTARGS`
+    trap "kill $SSH_AGENT_PID" 0
+fi
+export PS1="\[\e[1;32m\]\u\[\e[0m\]@\[\e[1;31m\]\h\[\e[0m\]\[\e[1;34m\] \W#\[\e[0m\] "
+eval $SSHADD $ID_RSA

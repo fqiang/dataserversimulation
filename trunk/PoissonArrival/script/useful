@@ -1,0 +1,7 @@
+
+
+#setup the remote pl node
+ssh -tX cambridge_fq208@pl2.pku.edu.cn "cd ~;wget http://www.cl.cam.ac.uk/~fq208/project/setup.bash;source setup.bash;bash" 
+
+#checkout the source code
+svn checkout https://dataserversimulation.googlecode.com/svn/trunk/ dataserversimulation --username f.qiang

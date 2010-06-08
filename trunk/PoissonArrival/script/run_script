@@ -1,3 +1,4 @@
+
 ant -DNumServer=10 -DPort=15010 LoadBalancer &
 sleep 2
 ant -DName=CHINA1 -DLocation=CHINA -DMaxPower=0.5 -DLBAddr=localhost:15010 ServerNode &
