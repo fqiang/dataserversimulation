@@ -1,0 +1,16 @@
+Eclipse and Ant based Java project
+
+0. 	Compile using ant task.
+		eg. ant build
+
+1.	Generate one hour trace using ant task.
+		Using ant task RequestEventGenerator_1hr to generate one hour sample trace files.
+		eg. ant RequestEventGenerator_1hr
+
+2. 	Running Loadbalancer
+		Using ant task LoadBalancer 
+		eg. ant -DNumServer=5 -DPort=15010 LoadBalancer
+
+3.	Running ServerNode
+		Using ant task ServerNode.
+		eg. ant -DName=JAPAN_1 -DLocaltion=JAPAN -DMaxPower=0.3 -DLBAddr=localhost:15010 ServerNode
