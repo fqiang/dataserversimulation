@@ -1,5 +1,9 @@
 Eclipse and Ant based Java project
 
+New version can also be checkout from google code server.
+	run "svn checkout https://dataserversimulation.googlecode.com/svn/trunk/ <DEST_DIRECTOR>"
+
+
 0. 	Compile using ant task.
 		eg. ant build
 
